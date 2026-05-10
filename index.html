@@ -139,6 +139,98 @@
     letter-spacing: 0.08em;
     transition: background-color .5s;
   }
+
+  .mode-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
+    border: 2px solid var(--ink);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+  }
+  .mode-badge[hidden] { display: none; }
+
+  /* ─── DEMO CTA BANNER ──────────────────── */
+  .demo-cta {
+    margin-top: 14px;
+    padding: 14px 22px;
+    background: #fff8e1;
+    border: 2px solid var(--ink);
+    border-radius: var(--br);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 3px 3px 0 var(--ink);
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .demo-cta:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .demo-cta[hidden] { display: none; }
+  .demo-cta-icon {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    background: #fbbf24;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .demo-cta-text {
+    flex: 1;
+    line-height: 1.4;
+  }
+  .demo-cta-text strong {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .demo-cta-text .jp {
+    display: block;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--mute);
+    margin-top: 2px;
+  }
+  .demo-cta-action {
+    flex-shrink: 0;
+    background: var(--ink);
+    color: var(--card);
+    padding: 9px 16px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    border: 2px solid var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  @media (max-width: 640px) {
+    .demo-cta { padding: 12px 16px; gap: 12px; flex-wrap: wrap; }
+    .demo-cta-text strong { font-size: 12px; }
+    .demo-cta-action { font-size: 10px; padding: 7px 12px; }
+  }
+  .mode-demo {
+    background: #fbbf24;
+    color: var(--ink);
+  }
+  .mode-live {
+    background: #84cc16;
+    color: var(--ink);
+  }
   .live-dot {
     width: 8px; height: 8px;
     background: var(--accent);
@@ -216,6 +308,7 @@
     padding: 36px 36px 32px;
     position: relative;
     overflow: hidden;
+    min-width: 0;
   }
   .hero-l::before {
     content: "";
@@ -257,17 +350,21 @@
   .status-word {
     font-family: 'Inter Tight', sans-serif;
     font-weight: 900;
-    font-size: clamp(82px, 11vw, 158px);
+    font-size: clamp(64px, 9vw, 120px);
     line-height: 0.85;
     letter-spacing: -0.06em;
     margin-top: 28px;
     color: var(--card);
     text-shadow: 4px 4px 0 var(--ink);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    hyphens: none;
+    max-width: 100%;
   }
   .status-word-jp {
     font-family: 'Noto Sans JP', sans-serif;
     font-weight: 900;
-    font-size: clamp(28px, 4vw, 48px);
+    font-size: clamp(28px, 4vw, 44px);
     line-height: 1;
     letter-spacing: 0.05em;
     margin-top: 12px;
@@ -528,6 +625,20 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
     font-weight: 700;
+  }
+  .section-head h2 .ref-tag {
+    height: 26px;
+    padding: 0 12px;
+    background: transparent;
+    color: var(--mute);
+    border: 1.5px solid var(--mute);
+    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
   }
   .section-head h2 .jp {
     font-family: 'Noto Sans JP', sans-serif;
@@ -903,6 +1014,81 @@
   }
   .colophon strong { color: var(--ink); font-weight: 700; }
 
+  /* ─── VISITOR STATS ──────────────────────── */
+  .visitors {
+    margin-top: 16px;
+    padding: 18px 24px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--br);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+  }
+  .visitors[hidden] { display: none; }
+  .vis-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+    border-right: 1.5px solid var(--ink);
+    padding-right: 16px;
+    margin-right: 4px;
+  }
+  .vis-total {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--mute);
+  }
+  .vis-total strong {
+    background: var(--ink);
+    color: var(--card);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .vis-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--ink);
+    opacity: 0.3;
+  }
+  .vis-region {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--mute);
+  }
+  .vis-region strong {
+    color: var(--ink);
+    font-weight: 800;
+    font-size: 12px;
+  }
+  .vis-region.active {
+    color: var(--accent);
+    transition: color .5s;
+  }
+  .vis-region.active strong {
+    color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .visitors { padding: 14px 16px; gap: 8px 14px; }
+    .vis-label { padding-right: 10px; border-right: none; padding-bottom: 8px; border-bottom: 1px solid var(--ink); width: 100%; }
+  }
+
   /* ─── TIER & SOURCE STYLING ──────────────── */
   .tier-dot {
     width: 8px;
@@ -1245,7 +1431,7 @@
     .r-1w .cell-date { font-size: 18px; }
     .r-1m .day-cell { height: 28px; }
     .kpi-value { font-size: 36px; }
-    .status-word { font-size: 76px; }
+    .status-word { font-size: 60px; }
     .incident { grid-template-columns: 44px 1fr; padding: 16px; }
     .incident-date { grid-column: 2; margin-bottom: 4px; }
     .incident-content { grid-column: 2; }
@@ -1264,6 +1450,7 @@
       </div>
       <div class="topbar-right">
         <span class="clock mono" id="datetime">— · —</span>
+        <span class="mode-badge mode-demo" id="modeBadge">DEMO</span>
         <span class="live-pill"><span class="live-dot"></span>LIVE</span>
         <button class="btn" id="refresh">REFRESH ↻</button>
         <button class="icon-btn" id="openSettings" title="Settings / 設定">
@@ -1272,15 +1459,21 @@
       </div>
     </header>
 
+    <!-- DEMO CTA BANNER (only visible in DEMO mode) -->
+    <div class="demo-cta" id="demoCta" hidden>
+      <div class="demo-cta-icon">⚡</div>
+      <div class="demo-cta-text">
+        <strong>You're viewing demo data. Want real-time updates?</strong>
+        <span class="jp">現在はデモデータを表示中。リアルタイムの海峡情勢をご覧になりたい方はこちら →</span>
+      </div>
+      <span class="demo-cta-action">⚙ SET UP LIVE</span>
+    </div>
+
     <!-- HERO -->
     <section class="hero">
       <div class="hero-l">
         <div class="hero-pills">
           <span class="pill dark">CURRENT STATUS / 現況</span>
-          <span class="pill alert" id="alertPill" hidden>
-            <span id="alertIcon"></span>
-            <span id="alertText">—</span>
-          </span>
           <span class="conf-badge" id="confidenceBadge" hidden></span>
         </div>
 
@@ -1436,8 +1629,8 @@
 
     <!-- MAP -->
     <div class="section-head">
-      <h2><span class="num-chip">01</span>The Strait <span class="jp">海峡</span></h2>
-      <span class="section-meta">26°34′N · 56°15′E</span>
+      <h2><span class="ref-tag">REF</span>About the Strait <span class="jp">海峡について</span></h2>
+      <span class="section-meta">26°34′N · 56°15′E · STATIC GEOGRAPHY</span>
     </div>
     <div class="map-card">
       <div class="map-side">
@@ -1625,7 +1818,7 @@
 
       <div class="info-side">
         <div class="info-stats">
-          <div class="info-card accent">
+          <div class="info-card">
             <div class="info-card-val">21<span class="unit">NM</span></div>
             <div class="info-card-label">at narrowest<span class="jp">最狭部</span></div>
           </div>
@@ -1651,7 +1844,7 @@
 
     <!-- TIMELINE -->
     <div class="section-head">
-      <h2><span class="num-chip">02</span>History <span class="jp">開閉履歴</span></h2>
+      <h2><span class="num-chip">01</span>History <span class="jp">開閉履歴</span></h2>
       <div class="toggle-group">
         <button class="toggle-btn" data-range="1w">1W</button>
         <button class="toggle-btn active" data-range="1m">1M</button>
@@ -1666,7 +1859,7 @@
 
     <!-- INCIDENTS -->
     <div class="section-head">
-      <h2><span class="num-chip">03</span>Incidents <span class="jp">最新事案</span></h2>
+      <h2><span class="num-chip">02</span>Incidents <span class="jp">最新事案</span></h2>
       <span class="section-meta" id="incidentMeta">— EVENTS</span>
     </div>
     <div class="incident-grid" id="incidentList">
@@ -1685,9 +1878,31 @@
       <div><strong>FETCHED</strong> · <span id="lastUpdatedFooter">—</span></div>
     </footer>
 
+    <!-- ─── VISITORS ───────────────────────── -->
+    <section class="visitors" id="visitStats">
+      <span class="vis-label">VISITORS / 訪問者</span>
+      <span class="vis-total">SEEN BY <strong id="vsTotal">—</strong></span>
+      <span class="vis-divider"></span>
+      <span class="vis-region" data-region="asia">ASIA <strong id="vsAsia">—</strong></span>
+      <span class="vis-region" data-region="europe">EUROPE <strong id="vsEurope">—</strong></span>
+      <span class="vis-region" data-region="americas">AMERICAS <strong id="vsAmericas">—</strong></span>
+      <span class="vis-region" data-region="africa">AFRICA <strong id="vsAfrica">—</strong></span>
+      <span class="vis-region" data-region="oceania">OCEANIA <strong id="vsOceania">—</strong></span>
+    </section>
+
     <!-- ─── DISCLAIMER ─────────────────────── -->
     <section class="disclaimer">
       <h4>About this data / 情報について</h4>
+
+      <div style="background: #fff8e1; border: 2px solid var(--ink); border-radius: var(--br-sm); padding: 14px 18px; margin-bottom: 18px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink); margin-bottom: 8px;">⚙ DEMO MODE vs LIVE MODE</div>
+        <p style="font-size: 12px; line-height: 1.6; color: var(--ink); margin-bottom: 8px;">
+          By default, this site shows <strong>demo data</strong> (yellow DEMO badge in the header) so anyone can preview the dashboard without setup. To pull real-time data from news sources, click the gear icon ⚙ to add your own Anthropic API key. The badge will switch to green LIVE.
+        </p>
+        <p class="jp" style="font-family: 'Noto Sans JP', sans-serif; font-size: 11px; line-height: 1.7; color: var(--mute); margin: 0;">
+          このサイトはデフォルトで<strong>デモデータ</strong>を表示します（ヘッダーの黄色いDEMOバッジ）。リアルタイムデータの取得には、右上の⚙アイコンからご自身のAnthropic APIキーを設定してください。設定後はバッジが緑のLIVEに切り替わります。
+        </p>
+      </div>
 
       <div class="disclaimer-tiers">
         <span class="disclaimer-tier"><span class="tier-dot tier-1"></span>PRIMARY — UKMTO, IMO, navy &amp; government statements</span>
@@ -1714,18 +1929,27 @@
   <!-- SETTINGS MODAL -->
   <div class="modal-bg" id="settingsModal">
     <div class="modal">
-      <h3><span class="num-chip">⚙</span>Settings</h3>
+      <h3><span class="num-chip">⚙</span>Live Mode Setup</h3>
       <p class="modal-sub">
-        Enter your Anthropic API key to fetch live Strait data.
-        <span class="jp">海峡のライブデータ取得には Anthropic API キーが必要です。キーはこのブラウザにのみ保存されます。</span>
+        You're viewing <strong>demo data</strong>. To pull real-time data from news sources, add your own Anthropic API key below. Your key is stored only in this browser — it never leaves your device.
+        <span class="jp">現在は<strong>デモデータ</strong>を表示中です。リアルタイムデータを取得するには、Anthropic APIキーを入力してください。キーはこのブラウザにのみ保存され、外部送信されません。</span>
       </p>
+
+      <div class="modal-row" style="background: var(--bg); padding: 14px 16px; border: 1.5px solid var(--ink); border-radius: var(--br-sm); margin-bottom: 18px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink); margin-bottom: 8px;">HOW TO GET A KEY · 取得方法</div>
+        <ol style="margin-left: 18px; font-size: 12px; line-height: 1.7; color: var(--ink);">
+          <li>Go to <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="color: var(--ink); font-weight: 600;">console.anthropic.com</a> and sign up (free)</li>
+          <li>Add a small credit balance ($5 covers ~25 fetches)</li>
+          <li>Click "Create Key" → copy → paste below</li>
+        </ol>
+        <div class="jp" style="font-family: 'Noto Sans JP', sans-serif; font-size: 11px; color: var(--mute); margin-top: 8px; line-height: 1.7;">
+          ① Anthropicコンソールで無料登録 → ② $5チャージ（約25回分） → ③ キー作成・コピー・貼り付け
+        </div>
+      </div>
 
       <div class="modal-row">
         <label class="modal-label">Anthropic API Key <span class="jp">APIキー</span></label>
         <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
-        <div class="modal-help">
-          Get your key at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com/settings/keys</a>
-        </div>
       </div>
 
       <div id="testResult"></div>
@@ -1733,7 +1957,7 @@
       <div class="modal-actions">
         <button class="btn-secondary" id="testApiKey">🔧 TEST</button>
         <button class="btn-primary" id="saveApiKey">SAVE / 保存</button>
-        <button class="btn-secondary" id="closeSettings">CANCEL</button>
+        <button class="btn-secondary" id="closeSettings">CLOSE</button>
       </div>
     </div>
   </div>
@@ -1760,6 +1984,8 @@
     }
     document.getElementById('openSettings').addEventListener('click', openSettings);
     document.getElementById('closeSettings').addEventListener('click', closeSettings);
+    const demoCtaEl = document.getElementById('demoCta');
+    if (demoCtaEl) demoCtaEl.addEventListener('click', openSettings);
     document.getElementById('settingsModal').addEventListener('click', (e) => {
       if (e.target.id === 'settingsModal') closeSettings();
     });
@@ -1807,12 +2033,18 @@
 
     /* ─── ICONS ──────────────────────────── */
     const icons = {
-      attack: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4 L20 4 L20 10"/><path d="M20 4 L9 15"/><circle cx="6" cy="18" r="2.5" fill="currentColor" opacity="0.25" stroke="none"/><path d="M3 21 L7 17 M3 21 L3 17 M3 21 L7 21"/></svg>',
-      escalation: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L22 20 L2 20 Z"/><path d="M12 10 L12 14"/><circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/></svg>',
-      diplomatic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L7 11 L11 15 L15 11 L19 11 L21 13"/><path d="M11 15 L9 17"/><path d="M3 13 L3 9 M21 11 L21 15"/></svg>',
+      // Rocket — for attacks (drone strikes, missile attacks, mine strikes)
+      attack: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
+      // Up-trending arrow — for escalations (tensions rising)
+      escalation: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>',
+      // Two linked nodes — for diplomatic events (talks, negotiations)
+      diplomatic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/><path d="M9 12h6"/></svg>',
+      // Check in circle — for de-escalations (positive events, ceasefires)
       deescalation: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12 L11 15 L16 9"/></svg>',
-      shipping: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18 Q 5 20 8 18 T 14 18 T 20 18"/><path d="M4 14 L20 14 L18 9 L6 9 Z"/><path d="M12 9 L12 5 L16 7 L12 7"/></svg>',
-      military: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7 L12 21"/><path d="M5 13 L19 13"/><path d="M5 13 Q 5 19 12 21 Q 19 19 19 13"/></svg>',
+      // Ship — for shipping events (rerouting, transit news)
+      shipping: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h18l-2-5H5z"/><path d="M2 18q3 2 6 0t6 0t6 0"/><path d="M12 9V4"/><path d="M9 6h6"/></svg>',
+      // Shield — for military events (deployments, exercises)
+      military: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L4 5 L4 11 Q 4 17 12 22 Q 20 17 20 11 L20 5 Z"/></svg>',
       default: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg>'
     };
 
@@ -2069,14 +2301,6 @@
       }
 
       const recentAttacks = (d.incidents || []).filter(inc => inc.type === 'attack' && daysSince(inc.date) <= 7);
-      const alertPill = document.getElementById('alertPill');
-      if (recentAttacks.length > 0) {
-        document.getElementById('alertIcon').innerHTML = icons.attack;
-        document.getElementById('alertText').textContent = recentAttacks.length + ' ATTACK' + (recentAttacks.length > 1 ? 'S' : '') + ' · 7D';
-        alertPill.hidden = false;
-      } else {
-        alertPill.hidden = true;
-      }
 
       document.getElementById('kTraffic').innerHTML = d.traffic_pct + '<span class="unit">%</span>';
       document.getElementById('kAttacks').textContent = recentAttacks.length;
@@ -2176,17 +2400,73 @@
       renderTimeline(currentRange);
     }
 
+    /* ─── DEMO DATA ───────────────────────── */
+    // Static sample data so visitors can preview without an API key
+    const DEMO_DATA = {
+      status: 'DISRUPTED',
+      status_jp: '混乱',
+      headline_en: 'IRGC enforces selective passage; commercial transit at ~5% of normal volumes.',
+      headline_jp: 'IRGCが通航を選別実施、商業通航量は通常の約5%まで低下。',
+      traffic_pct: 5,
+      traffic_pct_source: 'lloydslist.com',
+      advisory_level: 'CRITICAL',
+      advisory_source: 'UKMTO',
+      confidence: 'HIGH',
+      transitions: [
+        { date: '2025-11-15', status: 'OPEN' },
+        { date: '2026-02-28', status: 'CLOSED' },
+        { date: '2026-04-13', status: 'DISRUPTED' }
+      ],
+      incidents: [
+        { date: '2026-05-08', type: 'attack', summary_en: 'Tanker struck by drone near Strait, two crew injured.', summary_jp: '海峡近くでタンカーがドローン攻撃を受け2名負傷', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
+        { date: '2026-05-06', type: 'escalation', summary_en: 'IRGC reissues warning against unauthorized transit.', summary_jp: 'IRGC、未承認通航への警告を再発出', source_url: 'https://www.aljazeera.com', source_domain: 'aljazeera.com', tier: 3 },
+        { date: '2026-05-04', type: 'shipping', summary_en: 'Three Omani tankers reroute via inshore traffic zone.', summary_jp: 'オマーンタンカー3隻が沿岸航路に迂回', source_url: 'https://www.ukmto.org', source_domain: 'ukmto.org', tier: 1 },
+        { date: '2026-05-01', type: 'diplomatic', summary_en: 'Bahrain-led UN proposal to reopen strait postponed.', summary_jp: 'バーレーン主導の海峡再開UN決議、延期', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
+        { date: '2026-04-28', type: 'attack', summary_en: 'Mine struck by Greek-flagged LNG carrier near Larak.', summary_jp: 'ラーラク島近くでギリシャ船籍LNG船が機雷に接触', source_url: 'https://www.lloydslist.com', source_domain: 'lloydslist.com', tier: 1 },
+        { date: '2026-04-25', type: 'military', summary_en: 'US Fifth Fleet pauses convoy escorts citing risk.', summary_jp: '米第5艦隊、リスクを理由に護衛任務一時停止', source_url: 'https://www.cusnc.navy.mil', source_domain: 'cusnc.navy.mil', tier: 1 },
+        { date: '2026-04-20', type: 'escalation', summary_en: 'Iranian fast boats observed shadowing commercial vessels.', summary_jp: 'イラン高速艇が商船を追尾する様子が観測される', source_url: 'https://www.bloomberg.com', source_domain: 'bloomberg.com', tier: 2 }
+      ],
+      sources: [
+        { name: 'UKMTO Advisory', url: 'https://www.ukmto.org', tier: 1 },
+        { name: 'US Fifth Fleet', url: 'https://www.cusnc.navy.mil', tier: 1 },
+        { name: 'Lloyd\'s List', url: 'https://www.lloydslist.com', tier: 1 },
+        { name: 'Reuters', url: 'https://www.reuters.com', tier: 2 },
+        { name: 'Bloomberg', url: 'https://www.bloomberg.com', tier: 2 },
+        { name: 'Al Jazeera', url: 'https://www.aljazeera.com', tier: 3 }
+      ]
+    };
+
+    let isDemo = false;
+
+    function setMode(demo) {
+      isDemo = demo;
+      const badge = document.getElementById('modeBadge');
+      const cta = document.getElementById('demoCta');
+      if (badge) {
+        if (demo) {
+          badge.textContent = 'DEMO';
+          badge.className = 'mode-badge mode-demo';
+          badge.hidden = false;
+        } else {
+          badge.hidden = true;
+        }
+      }
+      if (cta) cta.hidden = !demo;
+    }
+
     function showError(err) {
       console.error('[Hormuz]', err);
       const isKeyErr = err.needsKey;
-      document.getElementById('statusEn').textContent = isKeyErr ? 'SETUP' : 'ERROR';
-      document.getElementById('statusJp').textContent = isKeyErr ? '初期設定' : '取得失敗';
-      document.getElementById('headlineEn').textContent = isKeyErr
-        ? 'Welcome. Click the gear icon ⚙ in the header to add your Anthropic API key.'
-        : 'Unable to retrieve live data. Press REFRESH or check your API key in settings.';
-      document.getElementById('headlineJp').textContent = isKeyErr
-        ? 'ヘッダーの歯車アイコン⚙をタップして、Anthropic APIキーを設定してください。'
-        : 'ライブデータの取得に失敗しました。設定からAPIキーを確認してください。';
+      // If no API key set, just show demo data instead of an error
+      if (isKeyErr) {
+        setMode(true);
+        render(DEMO_DATA);
+        return;
+      }
+      document.getElementById('statusEn').textContent = 'ERROR';
+      document.getElementById('statusJp').textContent = '取得失敗';
+      document.getElementById('headlineEn').textContent = 'Unable to retrieve live data. Press REFRESH or check your API key in settings.';
+      document.getElementById('headlineJp').textContent = 'ライブデータの取得に失敗しました。設定からAPIキーを確認してください。';
       document.getElementById('sinceLabel').textContent = '—';
       document.getElementById('sinceNum').textContent = 'DAY —';
       document.getElementById('sinceJp').textContent = '—';
@@ -2195,11 +2475,11 @@
       list.innerHTML =
         '<div class="incident">' +
           '<div class="incident-date">' + fmtDate(new Date()) + '</div>' +
-          '<div class="incident-icon t-' + (isKeyErr ? 'diplomatic' : 'escalation') + '">' + icons[isKeyErr ? 'diplomatic' : 'escalation'] + '</div>' +
+          '<div class="incident-icon t-escalation">' + icons.escalation + '</div>' +
           '<div class="incident-content">' +
-            '<span class="type-tag">' + (isKeyErr ? 'setup' : 'error') + '</span>' +
+            '<span class="type-tag">error</span>' +
             '<div class="incident-text-en">' + escapeHtml(String(err.message || err)) + '</div>' +
-            '<div class="incident-text-jp">' + (isKeyErr ? '右上の⚙アイコンから設定できます。' : 'エラー詳細はコンソールを確認してください。') + '</div>' +
+            '<div class="incident-text-jp">エラー詳細はコンソールを確認してください。</div>' +
           '</div>' +
         '</div>';
     }
@@ -2210,13 +2490,17 @@
       const original = btn.textContent;
       btn.textContent = 'FETCHING···';
       try {
-        const data = await fetchStatus();
-        render(data);
+        if (!getApiKey()) {
+          // No API key — show demo data
+          setMode(true);
+          render(DEMO_DATA);
+        } else {
+          const data = await fetchStatus();
+          setMode(false);
+          render(data);
+        }
       } catch (e) {
         showError(e);
-        if (e.needsKey) {
-          setTimeout(() => openSettings(), 600);
-        }
       } finally {
         btn.disabled = false;
         btn.textContent = original;
@@ -2224,6 +2508,103 @@
     }
 
     document.getElementById('refresh').addEventListener('click', load);
+
+    /* ─── CONTINENT DETECTION (from timezone) ─── */
+    function getContinent() {
+      try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        const region = tz.split('/')[0];
+        if (region === 'Asia') return 'asia';
+        if (region === 'Europe') return 'europe';
+        if (region === 'America' || region === 'Atlantic') return 'americas';
+        if (region === 'Africa') return 'africa';
+        if (region === 'Australia' || region === 'Pacific' || region === 'Antarctic' || region === 'Indian') return 'oceania';
+        return 'other';
+      } catch (e) { return 'other'; }
+    }
+
+    /* ─── COUNTER API (Abacus by Jason Cameron — free, no signup, CORS supported) ───
+       URL pattern:
+         hit (increment + return): https://abacus.jasoncameron.dev/hit/{namespace}/{key}
+         get only:                 https://abacus.jasoncameron.dev/get/{namespace}/{key}
+       Returns: {value: 123}
+       Graceful failure: if API is down or blocked, hide the visit-stats row.
+    */
+    const COUNTER_BASE = 'https://abacus.jasoncameron.dev';
+    const COUNTER_NS = 'strait-monitor.github.io';
+    const REGIONS = ['asia', 'europe', 'americas', 'africa', 'oceania'];
+
+    async function counterHit(key) {
+      try {
+        const r = await fetch(COUNTER_BASE + '/hit/' + COUNTER_NS + '/' + key);
+        if (!r.ok) return null;
+        const d = await r.json();
+        return typeof d.value === 'number' ? d.value : null;
+      } catch (e) { return null; }
+    }
+
+    async function counterGet(key) {
+      try {
+        const r = await fetch(COUNTER_BASE + '/get/' + COUNTER_NS + '/' + key);
+        if (!r.ok) return null;
+        const d = await r.json();
+        return typeof d.value === 'number' ? d.value : null;
+      } catch (e) { return null; }
+    }
+
+    function fmt(n) {
+      if (n === null || n === undefined) return '—';
+      return new Intl.NumberFormat('en-US').format(n);
+    }
+
+    async function updateVisitorStats() {
+      const continent = getContinent();
+      const stats = document.getElementById('visitStats');
+
+      // Highlight this user's continent
+      if (continent !== 'other') {
+        const activeEl = stats.querySelector('[data-region="' + continent + '"]');
+        if (activeEl) activeEl.classList.add('active');
+      }
+
+      // Hit user's relevant counters (total + their continent)
+      const hitTargets = ['total_visits'];
+      if (continent !== 'other' && REGIONS.indexOf(continent) !== -1) {
+        hitTargets.push(continent);
+      }
+      const hitPromises = hitTargets.map(k => counterHit(k));
+
+      // Read other regions' counters (no hit)
+      const fetchTargets = REGIONS.filter(r => hitTargets.indexOf(r) === -1);
+      const fetchPromises = fetchTargets.map(k => counterGet(k));
+
+      const [hitResults, fetchResults] = await Promise.all([
+        Promise.all(hitPromises),
+        Promise.all(fetchPromises)
+      ]);
+
+      const counts = {};
+      hitTargets.forEach((k, i) => { counts[k] = hitResults[i]; });
+      fetchTargets.forEach((k, i) => { counts[k] = fetchResults[i]; });
+
+      // If total is null (api down/blocked), hide the whole row
+      if (counts.total_visits === null) {
+        stats.hidden = true;
+        return;
+      }
+
+      // Render — Abacus returns null for keys that don't exist yet, so default to 0
+      document.getElementById('vsTotal').textContent = fmt(counts.total_visits);
+      document.getElementById('vsAsia').textContent = fmt(counts.asia === null ? 0 : counts.asia);
+      document.getElementById('vsEurope').textContent = fmt(counts.europe === null ? 0 : counts.europe);
+      document.getElementById('vsAmericas').textContent = fmt(counts.americas === null ? 0 : counts.americas);
+      document.getElementById('vsAfrica').textContent = fmt(counts.africa === null ? 0 : counts.africa);
+      document.getElementById('vsOceania').textContent = fmt(counts.oceania === null ? 0 : counts.oceania);
+    }
+
+    // Kick off visitor stats — non-blocking
+    updateVisitorStats();
+
     load();
   </script>
 </body>
