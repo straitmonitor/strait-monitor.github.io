@@ -1045,12 +1045,189 @@
     color: var(--ink);
     border: 2px solid var(--ink);
     flex-shrink: 0;
+    overflow: hidden;
   }
   .incident-icon svg { width: 22px; height: 22px; }
   .incident-icon.t-attack { background: var(--closed); color: var(--card); }
   .incident-icon.t-escalation { background: var(--disrupted); color: var(--card); }
   .incident-icon.t-diplomatic, .incident-icon.t-deescalation { background: var(--open); color: var(--card); }
   .incident-icon.t-shipping, .incident-icon.t-military { background: var(--yellow); color: var(--ink); }
+  .incident-icon.t-policy { background: var(--ink); color: var(--card); }
+
+  /* Actor portraits — neutral cream background, ink line drawing, slightly larger to fill the circle */
+  .incident-icon.actor-icon {
+    background: var(--card);
+    color: var(--ink);
+  }
+  .incident-icon.actor-icon svg {
+    width: 30px;
+    height: 30px;
+    margin-top: 4px; /* portrait extends to bottom of circle for "head & shoulders" framing */
+  }
+
+  /* ─── ICON LEGEND ──────────────────── */
+  /* Collapsible editorial footnote-style legend for incident icons */
+  .icon-legend {
+    margin-top: 14px;
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--br);
+    overflow: hidden;
+  }
+  .icon-legend summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 13px 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: var(--ink);
+    text-transform: uppercase;
+    user-select: none;
+    transition: background-color .15s;
+  }
+  .icon-legend summary::-webkit-details-marker { display: none; }
+  .icon-legend summary:hover { background: var(--bg); }
+  .icon-legend .legend-label {
+    flex: 1;
+    min-width: 0;
+  }
+  .icon-legend .legend-jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 10.5px;
+    color: var(--mute);
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    text-transform: none;
+  }
+  .icon-legend .legend-toggle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--card);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    transition: transform .25s ease;
+    flex-shrink: 0;
+  }
+  .icon-legend[open] .legend-toggle {
+    transform: rotate(45deg);
+  }
+  .legend-body {
+    padding: 6px 22px 22px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 4px;
+  }
+  .legend-group-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: var(--mute);
+    text-transform: uppercase;
+    margin: 16px 0 12px;
+  }
+  .legend-group-title .jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    text-transform: none;
+    letter-spacing: 0.04em;
+    margin-left: 8px;
+    font-weight: 500;
+    opacity: 0.85;
+  }
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px 18px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+  .legend-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .legend-icon svg { width: 18px; height: 18px; }
+  .legend-icon.actor-icon svg { width: 26px; height: 26px; margin-top: 4px; }
+  .legend-icon.t-attack { background: var(--closed); color: var(--card); }
+  .legend-icon.t-escalation { background: var(--disrupted); color: var(--card); }
+  .legend-icon.t-diplomatic { background: var(--open); color: var(--card); }
+  .legend-icon.t-deescalation { background: var(--open); color: var(--card); }
+  .legend-icon.t-shipping { background: var(--yellow); color: var(--ink); }
+  .legend-icon.t-military { background: var(--yellow); color: var(--ink); }
+  .legend-icon.t-policy { background: var(--ink); color: var(--card); }
+  .legend-icon.actor-icon { background: var(--card); color: var(--ink); }
+
+  .legend-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    line-height: 1.3;
+    min-width: 0;
+  }
+  .legend-text strong {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .legend-text span {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 10.5px;
+    color: var(--mute);
+    font-weight: 500;
+  }
+  .legend-note {
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--mute);
+    font-style: italic;
+    padding-top: 12px;
+    margin-top: 4px;
+    border-top: 1px solid var(--rule);
+  }
+  .legend-note .jp {
+    display: block;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-style: normal;
+    font-size: 10.5px;
+    margin-top: 4px;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 480px) {
+    .icon-legend summary { padding: 11px 16px; font-size: 10px; gap: 8px; }
+    .icon-legend .legend-jp { font-size: 10px; }
+    .legend-body { padding: 4px 16px 18px; gap: 18px; }
+    .legend-grid { grid-template-columns: 1fr; gap: 8px; }
+    .legend-icon { width: 32px; height: 32px; }
+    .legend-icon svg { width: 16px; height: 16px; }
+    .legend-icon.actor-icon svg { width: 22px; height: 22px; margin-top: 3px; }
+    .legend-text strong { font-size: 12px; }
+    .legend-text span { font-size: 10px; }
+    .legend-group-title { font-size: 9px; margin: 12px 0 10px; }
+  }
 
   .incident-content { padding-top: 2px; }
   .incident-content .type-tag {
@@ -1790,7 +1967,7 @@
         <div class="viz-legend">
           <span class="viz-legend-item"><span class="viz-legend-dot"></span>VESSEL</span>
           <span class="viz-legend-item">→ FLOW DIRECTION</span>
-          <span class="viz-legend-item">↕ 21 NM</span>
+          <span class="viz-legend-item">↕ 39 km</span>
         </div>
       </div>
     </section>
@@ -1976,11 +2153,11 @@
             <circle r="4" fill="var(--accent)" stroke="#0a0a0a" stroke-width="1.5"/>
           </g>
 
-          <!-- 21 NM measurement -->
+          <!-- 39 km measurement (narrowest point — also known as 21 nautical miles) -->
           <g>
             <line x1="500" y1="276" x2="538" y2="276" stroke="#0a0a0a" stroke-width="1.5"/>
-            <rect x="538" y="263" width="56" height="26" rx="13" fill="var(--accent)" stroke="#0a0a0a" stroke-width="2"/>
-            <text x="566" y="280" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="800" fill="#fff" letter-spacing="0.5">21 NM</text>
+            <rect x="535" y="263" width="62" height="26" rx="13" fill="var(--accent)" stroke="#0a0a0a" stroke-width="2"/>
+            <text x="566" y="280" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="800" fill="#fff" letter-spacing="0.5">39 km</text>
           </g>
 
           <!-- ─── COUNTRY LABELS ─────── -->
@@ -2015,7 +2192,7 @@
             <line x1="0" y1="-4" x2="0" y2="4" stroke="#0a0a0a" stroke-width="2"/>
             <line x1="30" y1="-3" x2="30" y2="3" stroke="#0a0a0a" stroke-width="1"/>
             <line x1="60" y1="-4" x2="60" y2="4" stroke="#0a0a0a" stroke-width="2"/>
-            <text x="30" y="-6" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" letter-spacing="0.5" fill="#0a0a0a">50 NM</text>
+            <text x="30" y="-6" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" letter-spacing="0.5" fill="#0a0a0a">90 km</text>
           </g>
         </svg>
       </div>
@@ -2023,7 +2200,7 @@
       <div class="info-side">
         <div class="info-stats">
           <div class="info-card">
-            <div class="info-card-val">21<span class="unit">NM</span></div>
+            <div class="info-card-val">39<span class="unit">km</span></div>
             <div class="info-card-label">at narrowest<span class="jp">最狭部</span></div>
           </div>
           <div class="info-card">
@@ -2036,8 +2213,8 @@
           </div>
         </div>
 
-        <p class="info-prose">The world's most strategically vital chokepoint. Twin two-mile shipping lanes — narrower than many city commutes — channel global energy.</p>
-        <p class="info-prose-jp">ペルシャ湾とオマーン湾を結ぶ、世界で最も戦略的に重要な海上のチョークポイント。往復わずか2海里ずつの航路を、世界中のタンカーが日々通過している。</p>
+        <p class="info-prose">The world's most strategically vital chokepoint. Twin 3 km shipping lanes — narrower than many city commutes — channel global energy.</p>
+        <p class="info-prose-jp">ペルシャ湾とオマーン湾を結ぶ、世界で最も戦略的に重要な海上のチョークポイント。往復わずか3kmほどの航路を、世界中のタンカーが日々通過している。</p>
 
         <div class="info-coords">
           <span>26°34′N · 56°15′E</span>
@@ -2079,6 +2256,43 @@
         </div>
       </div>
     </div>
+
+    <!-- ICON LEGEND — collapsible editorial footnote-style legend for incident icons -->
+    <details class="icon-legend">
+      <summary>
+        <span class="legend-label">ICON LEGEND</span>
+        <span class="legend-jp">アイコン凡例</span>
+        <span class="legend-toggle">+</span>
+      </summary>
+      <div class="legend-body">
+        <div class="legend-group">
+          <div class="legend-group-title">ACTION TYPES <span class="jp">アクション分類</span></div>
+          <div class="legend-grid">
+            <div class="legend-item"><div class="legend-icon t-attack" id="legAttack"></div><div class="legend-text"><strong>Attack</strong><span>攻撃</span></div></div>
+            <div class="legend-item"><div class="legend-icon t-escalation" id="legEscalation"></div><div class="legend-text"><strong>Escalation</strong><span>緊張増大</span></div></div>
+            <div class="legend-item"><div class="legend-icon t-diplomatic" id="legDiplomatic"></div><div class="legend-text"><strong>Diplomatic</strong><span>外交</span></div></div>
+            <div class="legend-item"><div class="legend-icon t-deescalation" id="legDeescalation"></div><div class="legend-text"><strong>De-escalation</strong><span>緊張緩和</span></div></div>
+            <div class="legend-item"><div class="legend-icon t-shipping" id="legShipping"></div><div class="legend-text"><strong>Shipping</strong><span>海運</span></div></div>
+            <div class="legend-item"><div class="legend-icon t-military" id="legMilitary"></div><div class="legend-text"><strong>Military</strong><span>軍事</span></div></div>
+            <div class="legend-item"><div class="legend-icon t-policy" id="legPolicy"></div><div class="legend-text"><strong>Policy</strong><span>政策</span></div></div>
+          </div>
+        </div>
+        <div class="legend-group">
+          <div class="legend-group-title">KEY ACTORS <span class="jp">主要関係者</span></div>
+          <div class="legend-grid">
+            <div class="legend-item"><div class="legend-icon actor-icon" id="legTrump"></div><div class="legend-text"><strong>Donald Trump</strong><span>米大統領</span></div></div>
+            <div class="legend-item"><div class="legend-icon actor-icon" id="legKhamenei"></div><div class="legend-text"><strong>Ali Khamenei</strong><span>イラン最高指導者</span></div></div>
+            <div class="legend-item"><div class="legend-icon actor-icon" id="legPezeshkian"></div><div class="legend-text"><strong>M. Pezeshkian</strong><span>イラン大統領</span></div></div>
+            <div class="legend-item"><div class="legend-icon actor-icon" id="legMbs"></div><div class="legend-text"><strong>Mohammed bin Salman</strong><span>サウジ皇太子</span></div></div>
+            <div class="legend-item"><div class="legend-icon actor-icon" id="legNetanyahu"></div><div class="legend-text"><strong>B. Netanyahu</strong><span>イスラエル首相</span></div></div>
+          </div>
+          <p class="legend-note">
+            Actor icons appear when a specific leader is the primary actor in an event. Otherwise, action-type icons are shown.
+            <span class="jp">特定人物が主体となる事象には人物アイコン、それ以外はアクション分類アイコンを表示します。</span>
+          </p>
+        </div>
+      </div>
+    </details>
 
     <footer class="colophon">
       <div><strong>SOURCES</strong> <span id="sources">—</span></div>
@@ -2240,6 +2454,7 @@
 
     /* ─── ICONS ──────────────────────────── */
     const icons = {
+      // ─── ACTION TYPES ──────────────────────
       // Rocket — for attacks (drone strikes, missile attacks, mine strikes)
       attack: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
       // Up-trending arrow — for escalations (tensions rising)
@@ -2252,8 +2467,56 @@
       shipping: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h18l-2-5H5z"/><path d="M2 18q3 2 6 0t6 0t6 0"/><path d="M12 9V4"/><path d="M9 6h6"/></svg>',
       // Shield — for military events (deployments, exercises)
       military: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L4 5 L4 11 Q 4 17 12 22 Q 20 17 20 11 L20 5 Z"/></svg>',
-      default: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg>'
+      // Scroll — for policy actions (executive orders, sanctions, declarations)
+      policy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/><path d="M8 10h8M8 14h8M8 18h5"/></svg>',
+      default: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg>',
+
+      // ─── ACTOR PORTRAITS ──────────────────────
+      // Editorial silhouette style — minimal line drawings, identifiable but not photorealistic
+      // Each ~24x24 viewBox, recognized by signature visual feature
+
+      // Trump — voluminous swept hair + tie collar
+      trump: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9 Q 6 3.5 12 3.5 Q 18.5 3.5 20.5 9"/><path d="M3.5 9 Q 4 11 7 10.5 Q 11 9.5 14 10 Q 17 10.5 20.5 9"/><path d="M6 10 Q 6 16 12 17 Q 18 16 18 10"/><path d="M9 12.5 L10 13 M14 12.5 L15 13"/><path d="M10 14.5 L 14 14.5"/><path d="M9 17 L 12 21 L 15 17"/></svg>',
+
+      // Khamenei — black turban + beard + glasses (Iran Supreme Leader)
+      khamenei: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="6.5" ry="3" fill="currentColor"/><path d="M6.5 7.5 Q 6.5 12 12 13 Q 17.5 12 17.5 7.5"/><rect x="7.5" y="9" width="2.8" height="1.7" rx="0.4"/><rect x="13.7" y="9" width="2.8" height="1.7" rx="0.4"/><path d="M10.3 9.85 L 13.7 9.85"/><path d="M9 13 Q 12 18 15 13"/><path d="M10 13 L 11 21 M14 13 L 13 21"/></svg>',
+
+      // Netanyahu — voluminous white hair + glasses (Israeli PM)
+      netanyahu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9 Q 4.5 3.5 8.5 3 Q 12 2.5 15.5 3 Q 19.5 3.5 20 9"/><path d="M4 9 Q 4 11 6.5 10.5 M20 9 Q 20 11 17.5 10.5"/><path d="M6.5 10.5 Q 7 16 12 17 Q 17 16 17.5 10.5"/><circle cx="9.5" cy="12" r="1.5"/><circle cx="14.5" cy="12" r="1.5"/><path d="M11 12 L 13 12"/><path d="M9 17 L 12 21 L 15 17"/></svg>',
+
+      // MBS — ghutra (Arab headdress) + agal (rope band) + beard (Saudi Crown Prince)
+      mbs: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7 Q 3 13 5.5 17 L 18.5 17 Q 21 13 20.5 7 Q 20 3 12 3 Q 4 3 3.5 7"/><ellipse cx="12" cy="5.8" rx="7" ry="1.3" fill="currentColor"/><path d="M7.5 9.5 Q 7.5 14 12 15 Q 16.5 14 16.5 9.5"/><path d="M10 13.5 Q 12 16 14 13.5"/><path d="M9.5 14 Q 10 17 11.5 17 L 12.5 17 Q 14 17 14.5 14"/></svg>',
+
+      // Pezeshkian — short hair + glasses + simple cleric look (Iran President)
+      pezeshkian: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8 Q 5.5 4 12 4 Q 18.5 4 19 8"/><path d="M5.5 9 Q 6 15 12 16 Q 18 15 18.5 9"/><circle cx="9.5" cy="11.5" r="1.4"/><circle cx="14.5" cy="11.5" r="1.4"/><path d="M11 11.5 L 13 11.5"/><path d="M11 14 Q 12 14.5 13 14"/><path d="M9 16 L 12 20 L 15 16"/></svg>'
     };
+
+    // Map actor key (lowercased) → icon name. The model returns string identifiers.
+    const ACTOR_ALIASES = {
+      'trump': 'trump',
+      'donald trump': 'trump',
+      'us president': 'trump',
+      'khamenei': 'khamenei',
+      'ali khamenei': 'khamenei',
+      'iran supreme leader': 'khamenei',
+      'netanyahu': 'netanyahu',
+      'benjamin netanyahu': 'netanyahu',
+      'bibi': 'netanyahu',
+      'mbs': 'mbs',
+      'mohammed bin salman': 'mbs',
+      'mohammad bin salman': 'mbs',
+      'saudi crown prince': 'mbs',
+      'pezeshkian': 'pezeshkian',
+      'masoud pezeshkian': 'pezeshkian',
+      'iran president': 'pezeshkian'
+    };
+
+    function getActorIcon(actor) {
+      if (!actor) return null;
+      const key = String(actor).toLowerCase().trim();
+      const iconKey = ACTOR_ALIASES[key];
+      return iconKey ? icons[iconKey] : null;
+    }
 
     /* ─── CLOCK ──────────────────────────── */
     function updateClock() {
@@ -2361,11 +2624,13 @@
         '  "advisory_source": "UKMTO" or "JMIC" or "OTHER" or null,\n' +
         '  "confidence": "HIGH" if multiple primary sources agree, "MEDIUM" if mixed signals, "LOW" if mostly secondary reporting,\n' +
         '  "transitions": [{"date": "YYYY-MM-DD", "status": "OPEN" or "DISRUPTED" or "CLOSED"}],\n' +
-        '  "incidents": [{"date": "YYYY-MM-DD", "type": "attack" or "escalation" or "diplomatic" or "deescalation" or "shipping" or "military", "summary_en": "max 14 words", "summary_jp": "簡潔に", "source_url": "full https URL of the article", "source_domain": "domain.com", "tier": 1 if from PRIMARY sources 1-6 above, 2 if wire service (7), 3 if secondary media (8)}],\n' +
+        '  "incidents": [{"date": "YYYY-MM-DD", "type": "attack" or "escalation" or "diplomatic" or "deescalation" or "shipping" or "military" or "policy", "actor": "trump" or "khamenei" or "netanyahu" or "mbs" or "pezeshkian" or null, "summary_en": "max 14 words", "summary_jp": "簡潔に", "source_url": "full https URL of the article", "source_domain": "domain.com", "tier": 1 if from PRIMARY sources 1-6 above, 2 if wire service (7), 3 if secondary media (8)}],\n' +
         '  "sources": [{"name": "Source Name", "url": "https://...", "tier": 1 or 2 or 3, "accessed": "' + today + '"}]\n' +
         '}\n\n' +
         'transitions: cover 6 months, 3-8 entries, oldest >=180 days ago.\n' +
         'incidents: 6-10 newest first. Always include source_url with the actual article URL.\n' +
+        'incident type "policy": use for executive orders, sanctions, declarations, and similar government policy actions.\n' +
+        'incident "actor" field: set to one of "trump"/"khamenei"/"netanyahu"/"mbs"/"pezeshkian" ONLY if that specific person is the primary actor of the action (e.g., "Trump signed executive order", "Khamenei issued statement"). Set to null otherwise (e.g., for institutional or general events).\n' +
         'sources: 3-6 sources actually used. Tier 1 = primary (UKMTO/IMO/Navy/IRGC/Lloyds/Windward). Tier 2 = wire (Reuters/AP/Bloomberg). Tier 3 = secondary (CNN/AlJazeera/NYT/NBC).\n' +
         'If primary sources are unavailable or contradict secondary reporting, set confidence to MEDIUM or LOW and note in headline.';
 
@@ -2594,7 +2859,10 @@
       list.innerHTML = '';
       (d.incidents || []).forEach((inc, i) => {
         const t = inc.type || 'default';
-        const iconSvg = icons[t] || icons.default;
+        // Actor icon takes priority over type icon when an actor is identified
+        const actorIcon = getActorIcon(inc.actor);
+        const iconSvg = actorIcon || icons[t] || icons.default;
+        const isActorIcon = !!actorIcon;
         const dRel = daysSince(inc.date);
         const relText = dRel === 0 ? 'today' : (dRel === 1 ? '1 day ago' : (dRel + ' days ago'));
         const tier = inc.tier || 3;
@@ -2616,9 +2884,12 @@
         div.className = 'incident fade-in';
         div.style.animationDelay = (i * 50) + 'ms';
 
+        // Actor icons get a different visual treatment — neutral background, ink stroke
+        const iconClass = isActorIcon ? 'incident-icon actor-icon' : 'incident-icon t-' + t;
+
         div.innerHTML =
           '<div class="incident-date">' + fmtDate(inc.date) + '<span class="relative">' + relText + '</span></div>' +
-          '<div class="incident-icon t-' + t + '">' + iconSvg + '</div>' +
+          '<div class="' + iconClass + '">' + iconSvg + '</div>' +
           '<div class="incident-content">' +
             '<span class="type-tag">' + t + '</span>' +
             '<div class="incident-text-en">' + escapeHtml(inc.summary_en) + '</div>' +
@@ -2678,13 +2949,14 @@
         { date: '2026-04-13', status: 'DISRUPTED' }
       ],
       incidents: [
-        { date: '2026-05-08', type: 'attack', summary_en: 'Tanker struck by drone near Strait, two crew injured.', summary_jp: '海峡近くでタンカーがドローン攻撃を受け2名負傷', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
-        { date: '2026-05-06', type: 'escalation', summary_en: 'IRGC reissues warning against unauthorized transit.', summary_jp: 'IRGC、未承認通航への警告を再発出', source_url: 'https://www.aljazeera.com', source_domain: 'aljazeera.com', tier: 3 },
-        { date: '2026-05-04', type: 'shipping', summary_en: 'Three Omani tankers reroute via inshore traffic zone.', summary_jp: 'オマーンタンカー3隻が沿岸航路に迂回', source_url: 'https://www.ukmto.org', source_domain: 'ukmto.org', tier: 1 },
-        { date: '2026-05-01', type: 'diplomatic', summary_en: 'Bahrain-led UN proposal to reopen strait postponed.', summary_jp: 'バーレーン主導の海峡再開UN決議、延期', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
-        { date: '2026-04-28', type: 'attack', summary_en: 'Mine struck by Greek-flagged LNG carrier near Larak.', summary_jp: 'ラーラク島近くでギリシャ船籍LNG船が機雷に接触', source_url: 'https://www.lloydslist.com', source_domain: 'lloydslist.com', tier: 1 },
-        { date: '2026-04-25', type: 'military', summary_en: 'US Fifth Fleet pauses convoy escorts citing risk.', summary_jp: '米第5艦隊、リスクを理由に護衛任務一時停止', source_url: 'https://www.cusnc.navy.mil', source_domain: 'cusnc.navy.mil', tier: 1 },
-        { date: '2026-04-20', type: 'escalation', summary_en: 'Iranian fast boats observed shadowing commercial vessels.', summary_jp: 'イラン高速艇が商船を追尾する様子が観測される', source_url: 'https://www.bloomberg.com', source_domain: 'bloomberg.com', tier: 2 }
+        { date: '2026-05-08', type: 'policy', actor: 'trump', summary_en: 'Trump signs executive order tightening sanctions on Iranian oil.', summary_jp: 'トランプ大統領、イラン石油への制裁強化大統領令に署名', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
+        { date: '2026-05-07', type: 'attack', actor: null, summary_en: 'Tanker struck by drone near Strait, two crew injured.', summary_jp: '海峡近くでタンカーがドローン攻撃を受け2名負傷', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
+        { date: '2026-05-06', type: 'escalation', actor: 'khamenei', summary_en: 'Khamenei reissues warning against unauthorized strait transit.', summary_jp: 'ハーメネイ師、未承認通航への警告を再発出', source_url: 'https://www.aljazeera.com', source_domain: 'aljazeera.com', tier: 3 },
+        { date: '2026-05-04', type: 'diplomatic', actor: 'mbs', summary_en: 'Saudi crown prince proposes Gulf-wide maritime safety summit.', summary_jp: 'サウジ皇太子、湾岸海上安全サミットを提案', source_url: 'https://www.bloomberg.com', source_domain: 'bloomberg.com', tier: 2 },
+        { date: '2026-05-01', type: 'military', actor: 'netanyahu', summary_en: 'Netanyahu authorizes naval deployment to Red Sea support mission.', summary_jp: 'ネタニヤフ首相、紅海支援任務への海軍派遣を承認', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
+        { date: '2026-04-28', type: 'attack', actor: null, summary_en: 'Mine struck by Greek-flagged LNG carrier near Larak.', summary_jp: 'ラーラク島近くでギリシャ船籍LNG船が機雷に接触', source_url: 'https://www.lloydslist.com', source_domain: 'lloydslist.com', tier: 1 },
+        { date: '2026-04-25', type: 'diplomatic', actor: 'pezeshkian', summary_en: 'Pezeshkian opens back-channel talks with Omani mediators.', summary_jp: 'ペゼシュキアン大統領、オマーン仲介者との水面下協議開始', source_url: 'https://www.aljazeera.com', source_domain: 'aljazeera.com', tier: 3 },
+        { date: '2026-04-20', type: 'military', actor: null, summary_en: 'US Fifth Fleet pauses convoy escorts citing elevated risk.', summary_jp: '米第5艦隊、リスク上昇を理由に護衛任務一時停止', source_url: 'https://www.cusnc.navy.mil', source_domain: 'cusnc.navy.mil', tier: 1 }
       ],
       sources: [
         { name: 'UKMTO Advisory', url: 'https://www.ukmto.org', tier: 1 },
@@ -2771,6 +3043,29 @@
     }
 
     document.getElementById('refresh').addEventListener('click', load);
+
+    /* ─── ICON LEGEND POPULATION ─── */
+    function populateLegend() {
+      const legendIconMap = {
+        legAttack: icons.attack,
+        legEscalation: icons.escalation,
+        legDiplomatic: icons.diplomatic,
+        legDeescalation: icons.deescalation,
+        legShipping: icons.shipping,
+        legMilitary: icons.military,
+        legPolicy: icons.policy,
+        legTrump: icons.trump,
+        legKhamenei: icons.khamenei,
+        legPezeshkian: icons.pezeshkian,
+        legMbs: icons.mbs,
+        legNetanyahu: icons.netanyahu
+      };
+      Object.keys(legendIconMap).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = legendIconMap[id];
+      });
+    }
+    populateLegend();
 
     /* ─── CONTINENT DETECTION (from timezone) ─── */
     function getContinent() {
