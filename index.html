@@ -13,6 +13,7 @@
     --card:  #ffffff;
     --ink:   #0a0a0a;
     --mute:  #6b6657;
+    --rule:  #d8d1bf;
     --line:  #0a0a0a;
 
     --open:        #2563eb;
@@ -35,12 +36,12 @@
     --accent-tint: var(--closed-tint);
 
     --br-sm: 8px;
-    --br:    16px;
-    --br-lg: 24px;
+    --br:    14px;
+    --br-lg: 20px;
 
-    --sh:      4px 4px 0 var(--ink);
-    --sh-deep: 6px 6px 0 var(--ink);
-    --sh-pop:  8px 8px 0 var(--ink);
+    --sh:      3px 3px 0 var(--ink);
+    --sh-deep: 5px 5px 0 var(--ink);
+    --sh-pop:  7px 7px 0 var(--ink);
   }
 
   body[data-status="OPEN"]      { --accent: var(--open);      --accent-2: var(--open-2);      --accent-tint: var(--open-tint); }
@@ -54,9 +55,11 @@
     color: var(--ink);
     font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.55;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   body::before {
     content: "";
@@ -83,31 +86,31 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 22px;
+    padding: 13px 20px;
     background: var(--card);
     border: 2px solid var(--ink);
     border-radius: var(--br);
     box-shadow: var(--sh);
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
   .brand {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 11px;
     font-weight: 800;
-    font-size: 18px;
+    font-size: 17px;
     letter-spacing: -0.02em;
   }
   .brand-mark {
-    width: 32px; height: 32px;
+    width: 30px; height: 30px;
     background: var(--accent);
     border: 2px solid var(--ink);
-    border-radius: 8px;
+    border-radius: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     transition: background-color .5s;
   }
   .brand-mark::before {
@@ -119,24 +122,24 @@
   .topbar-right {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.02em;
   }
-  .topbar-right .clock { color: var(--mute); }
+  .topbar-right .clock { color: var(--mute); font-size: 11.5px; }
   .live-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 10px;
+    padding: 5px 11px;
     background: var(--accent-tint);
-    border: 2px solid var(--ink);
+    border: 1.5px solid var(--ink);
     border-radius: 100px;
     font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-weight: 800;
+    letter-spacing: 0.1em;
     transition: background-color .5s;
   }
   .live-pill[hidden] { display: none; }
@@ -315,55 +318,48 @@
   }
   .hero-l > * { position: relative; }
 
-  .hero-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .hero-pills { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   .pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 11px;
-    border: 2px solid var(--ink);
+    padding: 5px 12px;
+    border: 1.5px solid var(--ink);
     background: var(--card);
     color: var(--ink);
     border-radius: 100px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    font-weight: 800;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
-  .pill.dark { background: var(--ink); color: var(--card); }
-  .pill.alert {
-    background: var(--yellow);
-    animation: alertPulse 2s ease-in-out infinite;
-  }
+  .pill.dark { background: var(--ink); color: var(--card); border-color: var(--ink); }
   .pill[hidden] { display: none; }
   .pill svg { width: 12px; height: 12px; }
-  @keyframes alertPulse {
-    0%, 100% { transform: rotate(-1deg); }
-    50%      { transform: rotate(1deg); }
-  }
 
   .status-word {
     font-family: 'Inter Tight', sans-serif;
     font-weight: 900;
-    font-size: clamp(40px, 13vw, 92px);
-    line-height: 0.85;
-    letter-spacing: -0.06em;
-    margin-top: 24px;
+    font-size: clamp(40px, 11vw, 76px);
+    line-height: 0.88;
+    letter-spacing: -0.055em;
+    margin-top: 20px;
     color: var(--card);
-    text-shadow: 4px 4px 0 var(--ink);
+    text-shadow: 3px 3px 0 var(--ink);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: clip;
     max-width: 100%;
+    display: block;
   }
   .status-word-jp {
     font-family: 'Noto Sans JP', sans-serif;
     font-weight: 900;
-    font-size: clamp(28px, 4vw, 44px);
+    font-size: clamp(24px, 4.5vw, 38px);
     line-height: 1;
-    letter-spacing: 0.05em;
-    margin-top: 12px;
+    letter-spacing: 0.04em;
+    margin-top: 8px;
     opacity: 0.95;
   }
 
@@ -371,46 +367,49 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    margin-top: 24px;
-    padding: 10px 16px;
+    margin-top: 22px;
+    padding: 9px 14px 9px 16px;
     background: var(--ink);
     color: var(--card);
     border-radius: 100px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
     letter-spacing: 0.02em;
     flex-wrap: wrap;
+    line-height: 1.2;
   }
   .since-tag-num {
     background: var(--yellow);
     color: var(--ink);
     border-radius: 100px;
-    padding: 2px 8px;
-    font-weight: 700;
-    font-size: 11px;
+    padding: 3px 9px;
+    font-weight: 800;
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
   }
-  .since-tag .jp { font-size: 11px; opacity: 0.8; font-weight: 400; }
+  .since-tag .jp { font-size: 11px; opacity: 0.85; font-weight: 500; }
 
   .hero-headline {
-    margin-top: 24px;
-    padding-top: 18px;
-    border-top: 2px solid color-mix(in srgb, var(--card) 45%, transparent);
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1.5px solid color-mix(in srgb, var(--card) 35%, transparent);
   }
   .headline-en {
     font-weight: 600;
     font-size: 17px;
-    line-height: 1.4;
-    margin-bottom: 8px;
+    line-height: 1.45;
+    margin-bottom: 10px;
     text-wrap: balance;
     max-width: 36ch;
+    letter-spacing: -0.005em;
   }
   .headline-jp {
     font-family: 'Noto Sans JP', sans-serif;
     font-weight: 500;
     font-size: 12.5px;
-    line-height: 1.7;
-    opacity: 0.85;
+    line-height: 1.75;
+    opacity: 0.88;
     max-width: 30em;
   }
 
@@ -525,18 +524,18 @@
   .kpis {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    margin-bottom: 32px;
+    gap: 16px;
+    margin-bottom: 36px;
   }
   .kpi {
     background: var(--card);
     border: 2px solid var(--ink);
     border-radius: var(--br);
     box-shadow: var(--sh);
-    padding: 20px;
+    padding: 18px 18px 16px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
     position: relative;
     transition: transform .15s, box-shadow .15s;
   }
@@ -544,42 +543,55 @@
     transform: translate(-2px, -2px);
     box-shadow: var(--sh-deep);
   }
-  .kpi-num { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--mute); letter-spacing: 0.18em; font-weight: 600; }
-  .kpi-label { font-weight: 700; font-size: 12px; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 8px; }
-  .kpi-label .jp { font-weight: 500; font-size: 10px; color: var(--mute); margin-left: 4px; }
+  .kpi-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--mute);
+    letter-spacing: 0.2em;
+    font-weight: 700;
+  }
+  .kpi-label {
+    font-weight: 700;
+    font-size: 12.5px;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .kpi-label .jp { font-weight: 500; font-size: 10.5px; color: var(--mute); margin-left: 5px; }
   .kpi-value {
     font-weight: 900;
-    font-size: 44px;
-    letter-spacing: -0.04em;
+    font-size: 42px;
+    letter-spacing: -0.045em;
     line-height: 1;
     color: var(--ink);
     display: flex;
     align-items: baseline;
-    gap: 4px;
+    gap: 3px;
   }
   .kpi-value.accent { color: var(--accent); transition: color .5s; }
-  .kpi-value .unit { font-size: 18px; font-weight: 700; color: var(--mute); margin-left: 2px; letter-spacing: -0.02em; }
+  .kpi-value .unit { font-size: 17px; font-weight: 700; color: var(--mute); margin-left: 2px; letter-spacing: -0.02em; }
   .kpi-tag {
-    margin-top: 8px;
+    margin-top: 10px;
     display: inline-flex;
     align-self: flex-start;
-    padding: 3px 8px;
-    background: var(--accent-tint);
+    padding: 3px 9px;
+    background: var(--bg);
     border: 1.5px solid var(--ink);
     border-radius: 100px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 9px;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     transition: background-color .5s;
   }
   .kpi-icon-corner {
     position: absolute;
-    top: 18px;
-    right: 18px;
-    width: 28px;
-    height: 28px;
+    top: 16px;
+    right: 16px;
+    width: 26px;
+    height: 26px;
     background: var(--accent);
     border: 2px solid var(--ink);
     border-radius: 50%;
@@ -589,7 +601,7 @@
     color: var(--card);
     transition: background-color .5s;
   }
-  .kpi-icon-corner svg { width: 14px; height: 14px; }
+  .kpi-icon-corner svg { width: 13px; height: 13px; }
   .kpi-icon-corner[hidden] { display: none; }
 
   /* SECTION HEADERS */
@@ -597,21 +609,22 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 40px;
+    gap: 12px;
+    margin-top: 44px;
   }
   .section-head h2 {
     font-weight: 800;
-    font-size: 28px;
-    letter-spacing: -0.03em;
+    font-size: 26px;
+    letter-spacing: -0.025em;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 11px;
+    line-height: 1.1;
   }
   .section-head h2 .num-chip {
-    width: 36px; height: 36px;
+    width: 32px; height: 32px;
     background: var(--ink);
     color: var(--card);
     border-radius: 50%;
@@ -619,12 +632,13 @@
     align-items: center;
     justify-content: center;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
+    flex-shrink: 0;
   }
   .section-head h2 .ref-tag {
-    height: 26px;
-    padding: 0 12px;
+    height: 24px;
+    padding: 0 11px;
     background: transparent;
     color: var(--mute);
     border: 1.5px solid var(--mute);
@@ -632,21 +646,22 @@
     display: inline-flex;
     align-items: center;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 700;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
+    flex-shrink: 0;
   }
   .section-head h2 .jp {
     font-family: 'Noto Sans JP', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     color: var(--mute);
     font-weight: 500;
     letter-spacing: 0.04em;
   }
   .section-meta {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.08em;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--mute);
     font-weight: 600;
@@ -2265,7 +2280,27 @@
       const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
       const m = cleaned.match(/\{[\s\S]*\}/);
       if (!m) throw new Error('No JSON in model response');
-      return JSON.parse(m[0]);
+      const parsed = JSON.parse(m[0]);
+      // Strip <cite>, , and similar markup that web_search injects
+      return cleanResponse(parsed);
+    }
+
+    // Recursively strip citation markup from all string fields in an object/array
+    function cleanResponse(obj) {
+      if (typeof obj === 'string') {
+        return obj
+          .replace(/<\/?(?:antml:)?cite[^>]*>/gi, '') // strip cite tags
+          .replace(/\[\s*\^?\d+\s*\]/g, '')          // strip [1] [^1] footnote markers
+          .replace(/\s+/g, ' ')                       // collapse whitespace
+          .trim();
+      }
+      if (Array.isArray(obj)) return obj.map(cleanResponse);
+      if (obj && typeof obj === 'object') {
+        const out = {};
+        for (const k in obj) out[k] = cleanResponse(obj[k]);
+        return out;
+      }
+      return obj;
     }
 
     /* ─── STATE ──────────────────────────── */
