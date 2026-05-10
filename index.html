@@ -1,0 +1,2230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HORMUZ ⌁ Strait Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:    #f4ede0;
+    --card:  #ffffff;
+    --ink:   #0a0a0a;
+    --mute:  #6b6657;
+    --line:  #0a0a0a;
+
+    --open:        #2563eb;
+    --open-2:      #93c5fd;
+    --open-tint:   #dbeafe;
+
+    --disrupted:   #ea580c;
+    --disrupted-2: #fdba74;
+    --disrupted-tint: #fed7aa;
+
+    --closed:      #dc2626;
+    --closed-2:    #fca5a5;
+    --closed-tint: #fee2e2;
+
+    --yellow: #fbbf24;
+    --green:  #84cc16;
+
+    --accent:      var(--closed);
+    --accent-2:    var(--closed-2);
+    --accent-tint: var(--closed-tint);
+
+    --br-sm: 8px;
+    --br:    16px;
+    --br-lg: 24px;
+
+    --sh:      4px 4px 0 var(--ink);
+    --sh-deep: 6px 6px 0 var(--ink);
+    --sh-pop:  8px 8px 0 var(--ink);
+  }
+
+  body[data-status="OPEN"]      { --accent: var(--open);      --accent-2: var(--open-2);      --accent-tint: var(--open-tint); }
+  body[data-status="DISRUPTED"] { --accent: var(--disrupted); --accent-2: var(--disrupted-2); --accent-tint: var(--disrupted-tint); }
+  body[data-status="CLOSED"]    { --accent: var(--closed);    --accent-2: var(--closed-2);    --accent-tint: var(--closed-tint); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(10,10,10,0.06) 1px, transparent 0);
+    background-size: 16px 16px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 24px 32px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .jp   { font-family: 'Noto Sans JP', sans-serif; }
+
+  /* TOPBAR */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 22px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--br);
+    box-shadow: var(--sh);
+    margin-bottom: 28px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+  .brand-mark {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    transition: background-color .5s;
+  }
+  .brand-mark::before {
+    content: "⌁";
+    font-style: italic;
+    transform: translateY(-1px);
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .topbar-right .clock { color: var(--mute); }
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: var(--accent-tint);
+    border: 2px solid var(--ink);
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    transition: background-color .5s;
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    animation: livePulse 2s ease-in-out infinite;
+    transition: background-color .5s;
+  }
+  @keyframes livePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.7); }
+  }
+
+  .btn {
+    background: var(--ink);
+    color: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 100px;
+    padding: 7px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .btn:active:not(:disabled) {
+    transform: translate(0, 0);
+    box-shadow: 0 0 0 var(--ink);
+  }
+  .btn:disabled { opacity: .5; cursor: wait; }
+
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    background: var(--card);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .15s, box-shadow .15s, background-color .15s;
+  }
+  .icon-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 var(--ink);
+    background: var(--accent-tint);
+  }
+  .icon-btn svg { width: 16px; height: 16px; }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 0;
+    background: var(--accent);
+    color: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--br-lg);
+    box-shadow: var(--sh-pop);
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: background-color .6s ease;
+    position: relative;
+  }
+
+  .hero-l {
+    padding: 36px 36px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-l::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--accent-2) 50%, transparent), transparent 55%);
+    pointer-events: none;
+  }
+  .hero-l > * { position: relative; }
+
+  .hero-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border: 2px solid var(--ink);
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .pill.dark { background: var(--ink); color: var(--card); }
+  .pill.alert {
+    background: var(--yellow);
+    animation: alertPulse 2s ease-in-out infinite;
+  }
+  .pill[hidden] { display: none; }
+  .pill svg { width: 12px; height: 12px; }
+  @keyframes alertPulse {
+    0%, 100% { transform: rotate(-1deg); }
+    50%      { transform: rotate(1deg); }
+  }
+
+  .status-word {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 900;
+    font-size: clamp(82px, 11vw, 158px);
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    margin-top: 28px;
+    color: var(--card);
+    text-shadow: 4px 4px 0 var(--ink);
+  }
+  .status-word-jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 900;
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1;
+    letter-spacing: 0.05em;
+    margin-top: 12px;
+    opacity: 0.95;
+  }
+
+  .since-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+    padding: 10px 16px;
+    background: var(--ink);
+    color: var(--card);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    flex-wrap: wrap;
+  }
+  .since-tag-num {
+    background: var(--yellow);
+    color: var(--ink);
+    border-radius: 100px;
+    padding: 2px 8px;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .since-tag .jp { font-size: 11px; opacity: 0.8; font-weight: 400; }
+
+  .hero-headline {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 2px solid color-mix(in srgb, var(--card) 45%, transparent);
+  }
+  .headline-en {
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    text-wrap: balance;
+    max-width: 36ch;
+  }
+  .headline-jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 500;
+    font-size: 12.5px;
+    line-height: 1.7;
+    opacity: 0.85;
+    max-width: 30em;
+  }
+
+  /* STRAIT VIZ */
+  .hero-r {
+    background: var(--card);
+    border-left: 2px solid var(--ink);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+  }
+  .viz-head { display: flex; justify-content: space-between; align-items: center; }
+  .viz-title { font-weight: 700; font-size: 13px; letter-spacing: -0.01em; color: var(--ink); }
+  .viz-title .small {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--mute);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .viz-status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--accent-tint);
+    border: 2px solid var(--ink);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    transition: background-color .5s;
+  }
+  .viz-status-chip-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    transition: background-color .5s;
+  }
+
+  .strait-viz {
+    flex: 1;
+    background: var(--accent-tint);
+    border: 2px solid var(--ink);
+    border-radius: var(--br-sm);
+    overflow: hidden;
+    position: relative;
+    min-height: 240px;
+    transition: background-color .6s ease;
+  }
+  .strait-viz svg { display: block; width: 100%; height: 100%; }
+
+  .viz-legend {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .viz-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .viz-legend-dot { width: 8px; height: 8px; background: var(--ink); border-radius: 2px; }
+
+  .ship-track { animation: shipFlow 8s linear infinite; }
+  .ship-track.s2 { animation-delay: -2.5s; }
+  .ship-track.s3 { animation-delay: -5s; }
+  .ship-track.s4 { animation-delay: -6.5s; }
+  @keyframes shipFlow {
+    0%   { transform: translateX(-50px); opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { transform: translateX(420px); opacity: 0; }
+  }
+  body[data-status="CLOSED"] .ship-track { animation-duration: 12s; }
+  body[data-status="CLOSED"] .ship-track.s3,
+  body[data-status="CLOSED"] .ship-track.s4 { display: none; }
+  body[data-status="DISRUPTED"] .ship-track.s4 { display: none; }
+  body[data-status="DISRUPTED"] .ship-track { animation-duration: 11s; }
+
+  .closed-overlay { display: none; }
+  body[data-status="CLOSED"] .closed-overlay { display: block; }
+  body[data-status="CLOSED"] .closed-overlay .x-bar {
+    animation: barShake 1.4s ease-in-out infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  @keyframes barShake {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50%      { transform: rotate(0deg) scale(1.04); }
+  }
+
+  .disrupted-overlay { display: none; }
+  body[data-status="DISRUPTED"] .disrupted-overlay { display: block; }
+  .warn-cone { animation: warnBlink 1.5s ease-in-out infinite; }
+  .warn-cone.w2 { animation-delay: 0.5s; }
+  @keyframes warnBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  /* KPIs */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+  .kpi {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--br);
+    box-shadow: var(--sh);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .kpi:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--sh-deep);
+  }
+  .kpi-num { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--mute); letter-spacing: 0.18em; font-weight: 600; }
+  .kpi-label { font-weight: 700; font-size: 12px; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 8px; }
+  .kpi-label .jp { font-weight: 500; font-size: 10px; color: var(--mute); margin-left: 4px; }
+  .kpi-value {
+    font-weight: 900;
+    font-size: 44px;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink);
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .kpi-value.accent { color: var(--accent); transition: color .5s; }
+  .kpi-value .unit { font-size: 18px; font-weight: 700; color: var(--mute); margin-left: 2px; letter-spacing: -0.02em; }
+  .kpi-tag {
+    margin-top: 8px;
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 3px 8px;
+    background: var(--accent-tint);
+    border: 1.5px solid var(--ink);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background-color .5s;
+  }
+  .kpi-icon-corner {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--card);
+    transition: background-color .5s;
+  }
+  .kpi-icon-corner svg { width: 14px; height: 14px; }
+  .kpi-icon-corner[hidden] { display: none; }
+
+  /* SECTION HEADERS */
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 40px;
+  }
+  .section-head h2 {
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-head h2 .num-chip {
+    width: 36px; height: 36px;
+    background: var(--ink);
+    color: var(--card);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .section-head h2 .jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 16px;
+    color: var(--mute);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .section-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mute);
+    font-weight: 600;
+  }
+
+  /* MAP */
+  .map-card {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--br-lg);
+    box-shadow: var(--sh-deep);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+  }
+  .map-side {
+    padding: 28px;
+    border-right: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card);
+  }
+  .map-side svg { width: 100%; height: auto; max-height: 460px; color: var(--accent); transition: color .5s; }
+  .info-side { padding: 32px; display: flex; flex-direction: column; gap: 22px; }
+
+  .info-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .info-card { padding: 16px; background: var(--bg); border: 2px solid var(--ink); border-radius: var(--br-sm); }
+  .info-card.accent { background: var(--accent); color: var(--card); }
+  .info-card.accent .info-card-label { color: var(--card); opacity: 0.85; }
+  .info-card-val {
+    font-weight: 900;
+    font-size: 30px;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .info-card-val .unit { font-size: 14px; opacity: 0.7; margin-left: 2px; }
+  .info-card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mute);
+    line-height: 1.3;
+  }
+  .info-card-label .jp {
+    display: block;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 10px;
+    text-transform: none;
+    letter-spacing: 0.04em;
+    margin-top: 3px;
+    opacity: 0.85;
+    font-weight: 500;
+  }
+
+  .info-prose { font-size: 14.5px; line-height: 1.55; color: var(--ink); text-wrap: pretty; }
+  .info-prose-jp { font-family: 'Noto Sans JP', sans-serif; font-size: 11.5px; color: var(--mute); line-height: 1.8; }
+  .info-coords {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--mute);
+    text-transform: uppercase;
+    padding-top: 14px;
+    border-top: 2px dashed var(--mute);
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+  }
+
+  .ring { transform-origin: center; transform-box: fill-box; }
+  .r1 { animation: ringPulse 2.6s ease-out infinite; }
+  .r2 { animation: ringPulse 2.6s ease-out infinite .7s; }
+  .r3 { animation: ringPulse 2.6s ease-out infinite 1.4s; }
+  @keyframes ringPulse {
+    0%   { opacity: 0; }
+    20%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* TIMELINE */
+  .timeline-card {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--br-lg);
+    box-shadow: var(--sh-deep);
+    padding: 24px 22px 20px;
+    overflow: hidden;
+  }
+  .toggle-group {
+    display: inline-flex;
+    background: var(--bg);
+    border: 2px solid var(--ink);
+    border-radius: 100px;
+    padding: 3px;
+    gap: 0;
+  }
+  .toggle-btn {
+    background: transparent;
+    border: none;
+    padding: 7px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 100px;
+    transition: all .2s ease;
+  }
+  .toggle-btn:hover { background: rgba(0,0,0,0.05); }
+  .toggle-btn.active { background: var(--ink); color: var(--card); }
+
+  .timeline-grid { display: grid; gap: 4px; margin-bottom: 16px; min-height: 60px; }
+  .timeline-grid.r-1w { grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .timeline-grid.r-1m { grid-template-columns: repeat(30, 1fr); gap: 3px; }
+  .timeline-grid.r-6m { grid-template-columns: repeat(180, 1fr); gap: 1px; }
+
+  .day-cell {
+    background: var(--bg);
+    border-radius: 4px;
+    border: 1.5px solid var(--ink);
+    position: relative;
+    cursor: pointer;
+    transition: transform .15s, filter .2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+  .day-cell.s-OPEN      { background: var(--open); }
+  .day-cell.s-DISRUPTED { background: var(--disrupted); }
+  .day-cell.s-CLOSED    { background: var(--closed); }
+
+  .day-cell:hover {
+    transform: translate(-2px, -2px);
+    filter: brightness(1.05);
+    box-shadow: 3px 3px 0 var(--ink);
+    z-index: 5;
+  }
+  .day-cell:hover .cell-tip,
+  .day-cell:focus-visible .cell-tip { display: block; }
+  .day-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .r-1w .day-cell { aspect-ratio: 1 / 1; min-height: 64px; color: white; padding: 6px; border-radius: 8px; }
+  .r-1m .day-cell { height: 36px; min-height: 24px; border-width: 1px; border-radius: 3px; }
+  .r-6m .day-cell { height: 40px; border: none; border-radius: 1px; }
+
+  .r-1w .cell-day {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    opacity: 0.9;
+    text-transform: uppercase;
+    margin-top: 1px;
+    font-weight: 700;
+  }
+  .r-1w .cell-date {
+    font-weight: 900;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin: 2px 0 4px;
+  }
+
+  .cell-incident-marker {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cell-incident-marker svg { width: 9px; height: 9px; }
+  .cell-incident-marker.t-attack { background: var(--yellow); color: var(--ink); }
+  .r-1m .cell-incident-marker { width: 6px; height: 6px; bottom: 2px; right: 2px; border-width: 1px; }
+  .r-1m .cell-incident-marker svg { display: none; }
+  .r-6m .cell-incident-marker { display: none; }
+  .r-6m .day-cell.has-attack { box-shadow: inset 0 -3px 0 var(--ink); }
+
+  .cell-tip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--card);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    font-weight: 600;
+  }
+  .cell-tip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--ink);
+  }
+
+  .timeline-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .timeline-summary {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 2px dashed var(--mute);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .ts-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--bg);
+    border: 2px solid var(--ink);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .ts-pill .num {
+    background: var(--ink);
+    color: var(--card);
+    border-radius: 100px;
+    padding: 1px 7px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .ts-pill.s-OPEN      { background: var(--open); color: white; }
+  .ts-pill.s-DISRUPTED { background: var(--disrupted); color: white; }
+  .ts-pill.s-CLOSED    { background: var(--closed); color: white; }
+  .ts-pill.attack      { background: var(--yellow); }
+  .ts-pill svg { width: 12px; height: 12px; }
+
+  /* INCIDENTS */
+  .incident-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .incident {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--br);
+    padding: 20px 22px;
+    display: grid;
+    grid-template-columns: 90px 48px 1fr;
+    gap: 20px;
+    align-items: start;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .incident:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  .incident-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+  .incident-date .relative {
+    display: block;
+    font-size: 9px;
+    color: var(--mute);
+    font-weight: 500;
+    margin-top: 4px;
+    letter-spacing: 0.06em;
+  }
+  .incident-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    flex-shrink: 0;
+  }
+  .incident-icon svg { width: 22px; height: 22px; }
+  .incident-icon.t-attack { background: var(--closed); color: var(--card); }
+  .incident-icon.t-escalation { background: var(--disrupted); color: var(--card); }
+  .incident-icon.t-diplomatic, .incident-icon.t-deescalation { background: var(--open); color: var(--card); }
+  .incident-icon.t-shipping, .incident-icon.t-military { background: var(--yellow); color: var(--ink); }
+
+  .incident-content { padding-top: 2px; }
+  .incident-content .type-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    margin-bottom: 8px;
+    border: 1.5px solid var(--ink);
+    border-radius: 100px;
+    background: var(--bg);
+  }
+  .incident-text-en {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    text-wrap: pretty;
+  }
+  .incident-text-jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+    color: var(--mute);
+    line-height: 1.7;
+  }
+
+  .colophon {
+    margin-top: 40px;
+    padding: 20px 24px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--br);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mute);
+    font-weight: 600;
+  }
+  .colophon strong { color: var(--ink); font-weight: 700; }
+
+  /* ─── TIER & SOURCE STYLING ──────────────── */
+  .tier-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    flex-shrink: 0;
+    display: inline-block;
+  }
+  .tier-1 { background: #16a34a; }   /* primary — green */
+  .tier-2 { background: #fbbf24; }   /* wire — yellow */
+  .tier-3 { background: #94a3b8; }   /* secondary — gray */
+
+  .incident-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 5px 11px 5px 8px;
+    background: var(--bg);
+    border: 1.5px solid var(--ink);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform .15s, background-color .15s;
+  }
+  .incident-source:hover {
+    transform: translate(-1px, -1px);
+    background: var(--accent-tint);
+  }
+  .incident-source .tier-label {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .incident-source .source-domain {
+    color: var(--mute);
+    font-weight: 500;
+  }
+  .incident-source .source-arrow {
+    font-size: 11px;
+    margin-left: 2px;
+  }
+
+  .source-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 10px 4px 7px;
+    background: var(--bg);
+    border: 1.5px solid var(--ink);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    transition: transform .15s, background-color .15s;
+  }
+  .source-pill:hover {
+    transform: translate(-1px, -1px);
+    background: var(--accent-tint);
+  }
+  .source-pill .source-tier {
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .source-pill .source-name {
+    color: var(--mute);
+    font-weight: 500;
+  }
+  #sources { display: flex; flex-wrap: wrap; gap: 0; }
+
+  /* CONFIDENCE BADGE in hero */
+  .conf-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--card);
+  }
+  .conf-badge[hidden] { display: none; }
+  .conf-badge .conf-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--card);
+  }
+  .conf-HIGH .conf-dot { background: #84cc16; }
+  .conf-MEDIUM .conf-dot { background: #fbbf24; }
+  .conf-LOW .conf-dot { background: #f87171; }
+
+  /* ─── DISCLAIMER FOOTER ──────────────────── */
+  .disclaimer {
+    margin-top: 32px;
+    padding: 22px 26px;
+    background: var(--card);
+    border: 2px dashed var(--ink);
+    border-radius: var(--br);
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--mute);
+  }
+  .disclaimer h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .disclaimer p { margin-bottom: 10px; }
+  .disclaimer p:last-child { margin-bottom: 0; }
+  .disclaimer .jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 10.5px;
+    line-height: 1.8;
+  }
+  .disclaimer-tiers {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+    padding: 10px 0;
+    border-top: 1px solid var(--rule, #c8c1ad);
+    border-bottom: 1px solid var(--rule, #c8c1ad);
+  }
+  .disclaimer-tier {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* MODAL */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.65);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: var(--br-lg);
+    box-shadow: var(--sh-pop);
+    max-width: 540px;
+    width: 100%;
+    padding: 36px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h3 {
+    font-weight: 900;
+    font-size: 24px;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .modal h3 .num-chip {
+    width: 32px; height: 32px;
+    background: var(--ink);
+    color: var(--card);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .modal-sub {
+    color: var(--mute);
+    font-size: 13px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .modal-sub .jp {
+    display: block;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11.5px;
+    margin-top: 4px;
+    line-height: 1.7;
+  }
+  .modal-row { margin-bottom: 18px; }
+  .modal-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .modal-label .jp { font-family: 'Noto Sans JP', sans-serif; text-transform: none; font-weight: 500; color: var(--mute); margin-left: 6px; letter-spacing: 0.02em; }
+  .modal input[type="password"], .modal input[type="text"] {
+    width: 100%;
+    background: var(--bg);
+    border: 2px solid var(--ink);
+    border-radius: var(--br-sm);
+    padding: 12px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+    transition: background-color .15s;
+  }
+  .modal input:focus {
+    background: var(--accent-tint);
+  }
+  .modal-help {
+    font-size: 12px;
+    color: var(--mute);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .modal-help a { color: var(--ink); font-weight: 600; text-decoration: underline; }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    flex: 1;
+    background: var(--accent);
+    color: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 100px;
+    padding: 12px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    min-width: 130px;
+  }
+  .btn-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .btn-secondary {
+    background: var(--card);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    border-radius: 100px;
+    padding: 12px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn-secondary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .test-result {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: var(--br-sm);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    border: 2px solid var(--ink);
+  }
+  .test-result.ok { background: var(--green); color: var(--ink); }
+  .test-result.err { background: var(--closed); color: var(--card); }
+
+  /* SKELETONS */
+  .skeleton {
+    display: inline-block;
+    height: 0.85em;
+    background: linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.4), rgba(255,255,255,0.18));
+    background-size: 200% 100%;
+    border-radius: 2px;
+    animation: shimmer 1.6s ease-in-out infinite;
+    vertical-align: middle;
+  }
+  .skeleton.dark { background: linear-gradient(90deg, var(--accent-tint), var(--bg), var(--accent-tint)); background-size: 200% 100%; }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .fade-in { animation: fadeUp .6s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .map-card { grid-template-columns: 1fr; }
+    .map-side { border-right: none; border-bottom: 2px solid var(--ink); padding: 20px; }
+  }
+  @media (max-width: 880px) {
+    .container { padding: 16px 20px 60px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-r { border-left: none; border-top: 2px solid var(--ink); }
+    .hero-l { padding: 28px; }
+    .topbar { padding: 12px 16px; }
+    .topbar-right .clock { display: none; }
+    .info-stats { grid-template-columns: 1fr; }
+    .timeline-grid.r-6m { grid-template-columns: repeat(60, 1fr); }
+    .r-6m .day-cell { height: 32px; }
+    .colophon { grid-template-columns: 1fr; text-align: left; }
+    .modal { padding: 28px 22px; }
+    .modal h3 { font-size: 20px; }
+  }
+  @media (max-width: 540px) {
+    .timeline-grid.r-1m { grid-template-columns: repeat(30, 1fr); gap: 2px; }
+    .timeline-grid.r-6m { grid-template-columns: repeat(30, 1fr); }
+    .r-1w .cell-date { font-size: 18px; }
+    .r-1m .day-cell { height: 28px; }
+    .kpi-value { font-size: 36px; }
+    .status-word { font-size: 76px; }
+    .incident { grid-template-columns: 44px 1fr; padding: 16px; }
+    .incident-date { grid-column: 2; margin-bottom: 4px; }
+    .incident-content { grid-column: 2; }
+    .section-head h2 { font-size: 22px; }
+  }
+</style>
+</head>
+<body data-status="DISRUPTED">
+  <div class="container">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div>HORMUZ STATUS</div>
+      </div>
+      <div class="topbar-right">
+        <span class="clock mono" id="datetime">— · —</span>
+        <span class="live-pill"><span class="live-dot"></span>LIVE</span>
+        <button class="btn" id="refresh">REFRESH ↻</button>
+        <button class="icon-btn" id="openSettings" title="Settings / 設定">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-l">
+        <div class="hero-pills">
+          <span class="pill dark">CURRENT STATUS / 現況</span>
+          <span class="pill alert" id="alertPill" hidden>
+            <span id="alertIcon"></span>
+            <span id="alertText">—</span>
+          </span>
+          <span class="conf-badge" id="confidenceBadge" hidden></span>
+        </div>
+
+        <h1 class="status-word" id="statusEn"><span class="skeleton" style="width: 4ch;">······</span></h1>
+        <div class="status-word-jp" id="statusJp"><span class="skeleton" style="width: 4em;"></span></div>
+
+        <div class="since-tag" id="sinceTag">
+          <span id="sinceLabel">— since —</span>
+          <span class="since-tag-num" id="sinceNum">DAY —</span>
+          <span class="jp" id="sinceJp">—</span>
+        </div>
+
+        <div class="hero-headline">
+          <p class="headline-en" id="headlineEn"><span class="skeleton" style="width: 90%;"></span></p>
+          <p class="headline-jp" id="headlineJp"><span class="skeleton" style="width: 70%;"></span></p>
+        </div>
+      </div>
+
+      <div class="hero-r">
+        <div class="viz-head">
+          <div class="viz-title">
+            Strait Flow
+            <span class="small">Live shipping state</span>
+          </div>
+          <div class="viz-status-chip">
+            <span class="viz-status-chip-dot"></span>
+            <span id="vizStatusText">—</span>
+          </div>
+        </div>
+
+        <div class="strait-viz">
+          <svg viewBox="0 0 400 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="land-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="6" stroke="#0a0a0a" stroke-width="1.5"/>
+              </pattern>
+              <pattern id="water-dots" width="12" height="12" patternUnits="userSpaceOnUse">
+                <circle cx="3" cy="3" r="1" fill="#0a0a0a" opacity="0.2"/>
+                <circle cx="9" cy="9" r="1" fill="#0a0a0a" opacity="0.2"/>
+              </pattern>
+            </defs>
+
+            <path d="M 0 0 L 400 0 L 400 50 Q 360 55 320 60 T 240 70 Q 180 75 120 70 T 0 60 Z"
+              fill="url(#land-hatch)" stroke="#0a0a0a" stroke-width="2"/>
+            <text x="20" y="30" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0a0a0a" letter-spacing="2">IRAN</text>
+
+            <rect x="0" y="60" width="400" height="120" fill="url(#water-dots)"/>
+
+            <line x1="0" y1="120" x2="400" y2="120" stroke="#0a0a0a" stroke-width="0.8" stroke-dasharray="6,6" opacity="0.3"/>
+
+            <g opacity="0.15">
+              <path d="M 30 100 L 60 100 L 55 96 M 60 100 L 55 104" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+              <path d="M 130 100 L 160 100 L 155 96 M 160 100 L 155 104" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+              <path d="M 230 100 L 260 100 L 255 96 M 260 100 L 255 104" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+              <path d="M 330 100 L 360 100 L 355 96 M 360 100 L 355 104" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+            </g>
+
+            <g class="ship-track s1">
+              <g transform="translate(-30, 92)">
+                <rect x="0" y="0" width="22" height="8" fill="#0a0a0a" rx="1"/>
+                <polygon points="22,0 30,4 22,8" fill="#0a0a0a"/>
+                <rect x="6" y="-5" width="3" height="5" fill="#0a0a0a"/>
+                <rect x="13" y="-5" width="3" height="5" fill="#0a0a0a"/>
+              </g>
+            </g>
+            <g class="ship-track s2">
+              <g transform="translate(-30, 130)">
+                <rect x="0" y="0" width="26" height="9" fill="#0a0a0a" rx="1"/>
+                <polygon points="26,0 35,4.5 26,9" fill="#0a0a0a"/>
+                <rect x="8" y="-6" width="3" height="6" fill="#0a0a0a"/>
+                <rect x="16" y="-6" width="3" height="6" fill="#0a0a0a"/>
+              </g>
+            </g>
+            <g class="ship-track s3">
+              <g transform="translate(-30, 105)">
+                <rect x="0" y="0" width="20" height="7" fill="#0a0a0a" rx="1"/>
+                <polygon points="20,0 27,3.5 20,7" fill="#0a0a0a"/>
+                <rect x="6" y="-4" width="2.5" height="4" fill="#0a0a0a"/>
+              </g>
+            </g>
+            <g class="ship-track s4">
+              <g transform="translate(-30, 145)">
+                <rect x="0" y="0" width="24" height="8" fill="#0a0a0a" rx="1"/>
+                <polygon points="24,0 32,4 24,8" fill="#0a0a0a"/>
+                <rect x="7" y="-5" width="3" height="5" fill="#0a0a0a"/>
+                <rect x="14" y="-5" width="3" height="5" fill="#0a0a0a"/>
+              </g>
+            </g>
+
+            <g class="closed-overlay">
+              <g class="x-bar">
+                <rect x="170" y="62" width="60" height="116" fill="#dc2626" stroke="#0a0a0a" stroke-width="2.5" rx="6" transform="rotate(15 200 120)"/>
+                <line x1="180" y1="100" x2="220" y2="140" stroke="#0a0a0a" stroke-width="4" stroke-linecap="round"/>
+                <line x1="220" y1="100" x2="180" y2="140" stroke="#0a0a0a" stroke-width="4" stroke-linecap="round"/>
+              </g>
+              <text x="200" y="40" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="900" fill="#0a0a0a" letter-spacing="3">BLOCKED · 封鎖</text>
+            </g>
+
+            <g class="disrupted-overlay">
+              <g transform="translate(180, 75)" class="warn-cone w1">
+                <polygon points="0,28 14,0 28,28" fill="#fbbf24" stroke="#0a0a0a" stroke-width="2"/>
+                <text x="14" y="22" text-anchor="middle" font-family="JetBrains Mono" font-size="13" font-weight="900" fill="#0a0a0a">!</text>
+              </g>
+              <g transform="translate(180, 138)" class="warn-cone w2">
+                <polygon points="0,28 14,0 28,28" fill="#fbbf24" stroke="#0a0a0a" stroke-width="2"/>
+                <text x="14" y="22" text-anchor="middle" font-family="JetBrains Mono" font-size="13" font-weight="900" fill="#0a0a0a">!</text>
+              </g>
+              <text x="200" y="35" text-anchor="middle" font-family="JetBrains Mono" font-size="10" font-weight="900" fill="#0a0a0a" letter-spacing="2">CAUTION · 警戒</text>
+            </g>
+
+            <path d="M 0 240 L 400 240 L 400 195 Q 360 188 320 184 T 240 178 Q 180 175 120 180 T 0 188 Z"
+              fill="url(#land-hatch)" stroke="#0a0a0a" stroke-width="2"/>
+            <text x="20" y="225" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0a0a0a" letter-spacing="2">OMAN / UAE</text>
+          </svg>
+        </div>
+
+        <div class="viz-legend">
+          <span class="viz-legend-item"><span class="viz-legend-dot"></span>VESSEL</span>
+          <span class="viz-legend-item">→ FLOW DIRECTION</span>
+          <span class="viz-legend-item">↕ 21 NM</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-num">01</div>
+        <div class="kpi-label">Traffic <span class="jp">通航量</span></div>
+        <div class="kpi-value accent" id="kTraffic">—<span class="unit">%</span></div>
+        <span class="kpi-tag">VS NORMAL</span>
+      </div>
+      <div class="kpi">
+        <div class="kpi-num">02</div>
+        <div class="kpi-label">Attacks <span class="jp">攻撃</span></div>
+        <div class="kpi-value accent" id="kAttacks">—</div>
+        <span class="kpi-tag">7 DAYS</span>
+        <div class="kpi-icon-corner" id="kAttacksIcon" hidden></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-num">03</div>
+        <div class="kpi-label">Advisory <span class="jp">勧告</span></div>
+        <div class="kpi-value accent" id="kAdvisory" style="font-size: 26px;">—</div>
+        <span class="kpi-tag">UKMTO / JMIC</span>
+      </div>
+      <div class="kpi">
+        <div class="kpi-num">04</div>
+        <div class="kpi-label">Last Event <span class="jp">直近</span></div>
+        <div class="kpi-value" id="kLast">—<span class="unit">d</span></div>
+        <span class="kpi-tag" id="kLastTag">DAYS AGO</span>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="section-head">
+      <h2><span class="num-chip">01</span>The Strait <span class="jp">海峡</span></h2>
+      <span class="section-meta">26°34′N · 56°15′E</span>
+    </div>
+    <div class="map-card">
+      <div class="map-side">
+        <svg viewBox="0 0 600 480" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- sea: dusty teal-blue with subtle wave lines -->
+            <pattern id="m-water" width="20" height="20" patternUnits="userSpaceOnUse">
+              <rect width="20" height="20" fill="#b8ced9"/>
+              <path d="M 0 6 Q 5 3 10 6 T 20 6" fill="none" stroke="#0a0a0a" stroke-width="0.5" opacity="0.12"/>
+              <path d="M 0 14 Q 5 11 10 14 T 20 14" fill="none" stroke="#0a0a0a" stroke-width="0.5" opacity="0.12"/>
+            </pattern>
+            <!-- land: warm sand, slightly more saturated for distinction without an outline -->
+            <pattern id="m-land" width="10" height="10" patternUnits="userSpaceOnUse">
+              <rect width="10" height="10" fill="#e8d8a8"/>
+              <circle cx="2.5" cy="2.5" r="0.6" fill="#0a0a0a" opacity="0.1"/>
+              <circle cx="7.5" cy="7.5" r="0.6" fill="#0a0a0a" opacity="0.1"/>
+            </pattern>
+            <!-- mountain hatching for Musandam relief -->
+            <pattern id="m-mountain" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="6" height="6" fill="transparent"/>
+              <line x1="0" y1="0" x2="0" y2="6" stroke="#0a0a0a" stroke-width="0.4" opacity="0.22"/>
+            </pattern>
+          </defs>
+
+          <!-- water background -->
+          <rect width="600" height="480" fill="url(#m-water)"/>
+
+          <!-- ─── IRAN — flowing coastline, no stroke ─────── -->
+          <path d="
+            M 0,0 L 600,0 L 600,210
+            C 580,214 560,205 535,215
+            C 510,212 488,225 462,220
+            C 440,228 418,232 395,228
+            C 376,234 360,224 348,214
+            C 332,212 320,224 318,240
+            C 320,254 332,260 350,258
+            C 378,262 408,258 438,262
+            C 470,256 502,260 535,254
+            C 562,252 582,248 600,246
+            Z
+          " fill="url(#m-land)"/>
+
+          <!-- ─── QESHM ─────── -->
+          <path d="
+            M 95,275
+            C 130,265 175,265 220,270
+            C 260,275 300,283 320,295
+            C 322,305 312,314 295,316
+            C 250,319 200,315 155,310
+            C 125,305 102,295 92,283
+            C 90,278 92,276 95,275 Z
+          " fill="url(#m-land)"/>
+
+          <!-- ─── HORMUZ ISLAND ─────── -->
+          <path d="M 388,288 C 400,284 414,290 414,298 C 412,308 396,310 386,304 C 380,298 382,290 388,288 Z"
+            fill="url(#m-land)"/>
+
+          <!-- ─── LARAK ISLAND ─────── -->
+          <path d="M 432,304 C 444,302 452,308 450,316 C 444,320 432,318 428,312 C 426,306 428,304 432,304 Z"
+            fill="url(#m-land)"/>
+
+          <!-- ─── UAE ─────── -->
+          <path d="
+            M 0,480 L 0,395
+            C 60,392 130,394 200,388
+            C 250,388 300,388 332,394
+            C 348,400 358,412 360,425
+            L 360,480 Z
+          " fill="url(#m-land)"/>
+
+          <!-- ─── MUSANDAM PENINSULA — rugged fjord coastline ─────── -->
+          <!--
+            West coast (Persian Gulf side): jagged ria/khor inlets typical of Musandam
+            Tip: pointing NNE ~ (478, 268)
+            East coast (Gulf of Oman): smoother but still irregular
+            Includes detached islets off the tip
+          -->
+          <path d="
+            M 360,480
+            L 360,425
+            C 359,415 360,402 363,392
+            C 358,388 362,384 368,386
+            C 372,380 369,374 365,372
+            C 372,366 380,368 384,374
+            C 388,368 384,360 379,358
+            C 386,352 396,355 400,362
+            C 405,358 401,348 396,344
+            C 404,338 414,342 418,350
+            C 422,344 418,335 412,330
+            C 420,322 432,326 438,335
+            C 444,332 446,322 442,316
+            C 451,310 462,314 466,322
+            C 470,316 466,306 460,302
+            C 468,294 480,296 484,304
+            C 488,298 484,288 478,283
+            C 484,272 494,274 498,282
+            C 504,280 506,272 502,266
+            C 510,262 520,268 518,278
+            C 524,278 528,272 526,266
+            C 534,266 540,274 536,282
+            C 540,290 548,294 552,302
+            C 548,308 538,308 532,302
+            C 530,310 534,318 540,322
+            C 534,328 524,326 520,318
+            C 518,326 522,336 528,340
+            C 522,346 510,344 506,336
+            C 504,344 510,354 516,358
+            C 510,364 500,360 496,352
+            C 494,360 500,372 508,378
+            C 502,384 492,380 490,372
+            C 488,382 498,396 510,402
+            C 506,410 494,406 490,398
+            C 492,408 504,418 518,422
+            C 528,428 542,432 558,434
+            C 575,436 590,438 600,440
+            L 600,480 Z
+          " fill="url(#m-land)"/>
+
+          <!-- internal mountain shading for Musandam -->
+          <path d="
+            M 395,335
+            C 410,322 425,318 445,328
+            C 458,322 470,308 478,295
+            C 486,302 494,318 500,335
+            C 508,352 510,368 506,382
+            C 490,388 470,386 450,380
+            C 430,374 410,360 395,335 Z
+          " fill="url(#m-mountain)" opacity="0.55"/>
+
+          <!-- small offshore islets off Musandam tip -->
+          <ellipse cx="500" cy="260" rx="4" ry="2.5" fill="url(#m-land)"/>
+          <ellipse cx="514" cy="252" rx="3" ry="2" fill="url(#m-land)"/>
+          <ellipse cx="486" cy="252" rx="3" ry="2" fill="url(#m-land)"/>
+
+          <!-- subtle UAE/Musandam political dotted border -->
+          <line x1="360" y1="480" x2="360" y2="425" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="3,3" opacity="0.35"/>
+
+          <!-- ═════ CHOKEPOINT — pulsing focal point ═════ -->
+          <g transform="translate(478, 276)">
+            <circle r="56" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.35" class="ring r3"/>
+            <circle r="38" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.55" class="ring r2"/>
+            <circle r="22" fill="var(--accent)" opacity="0.18" class="ring r1"/>
+            <circle r="22" fill="none" stroke="var(--accent)" stroke-width="3" class="ring r1"/>
+            <line x1="-8" y1="-8" x2="8" y2="8" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="-8" y1="8" x2="8" y2="-8" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+            <circle r="4" fill="var(--accent)" stroke="#0a0a0a" stroke-width="1.5"/>
+          </g>
+
+          <!-- 21 NM measurement -->
+          <g>
+            <line x1="500" y1="276" x2="538" y2="276" stroke="#0a0a0a" stroke-width="1.5"/>
+            <rect x="538" y="263" width="56" height="26" rx="13" fill="var(--accent)" stroke="#0a0a0a" stroke-width="2"/>
+            <text x="566" y="280" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="800" fill="#fff" letter-spacing="0.5">21 NM</text>
+          </g>
+
+          <!-- ─── COUNTRY LABELS (3 only) ─────── -->
+          <text x="44" y="80" font-family="Inter Tight" font-size="44" font-weight="900" fill="#0a0a0a" letter-spacing="-0.05em">IRAN</text>
+          <text x="36" y="430" font-family="Inter Tight" font-size="34" font-weight="900" fill="#0a0a0a" letter-spacing="-0.05em">U.A.E.</text>
+          <text x="478" y="465" font-family="Inter Tight" font-size="34" font-weight="900" fill="#0a0a0a" letter-spacing="-0.05em">OMAN</text>
+
+          <!-- ─── SEA LABELS (minimal) ─────── -->
+          <text x="22" y="158" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0a0a0a" letter-spacing="2" opacity="0.7">PERSIAN GULF</text>
+          <text x="500" y="170" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0a0a0a" letter-spacing="2" opacity="0.7">GULF OF</text>
+          <text x="500" y="185" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0a0a0a" letter-spacing="2" opacity="0.7">OMAN</text>
+
+          <!-- ─── COMPASS (top right) ─────── -->
+          <g transform="translate(560, 50)">
+            <circle r="20" fill="#fbf6e9" stroke="#0a0a0a" stroke-width="2"/>
+            <line x1="0" y1="-17" x2="0" y2="17" stroke="#0a0a0a" stroke-width="1"/>
+            <line x1="-17" y1="0" x2="17" y2="0" stroke="#0a0a0a" stroke-width="1"/>
+            <polygon points="0,-17 -4,-8 4,-8" fill="#0a0a0a"/>
+            <text x="0" y="-25" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0a0a0a">N</text>
+          </g>
+
+          <!-- ─── SCALE BAR (top right, under compass — out of UAE's way) ─────── -->
+          <g transform="translate(530, 110)">
+            <line x1="0" y1="0" x2="60" y2="0" stroke="#0a0a0a" stroke-width="2"/>
+            <line x1="0" y1="-4" x2="0" y2="4" stroke="#0a0a0a" stroke-width="2"/>
+            <line x1="30" y1="-3" x2="30" y2="3" stroke="#0a0a0a" stroke-width="1"/>
+            <line x1="60" y1="-4" x2="60" y2="4" stroke="#0a0a0a" stroke-width="2"/>
+            <text x="30" y="-6" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" letter-spacing="0.5" fill="#0a0a0a">50 NM</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="info-side">
+        <div class="info-stats">
+          <div class="info-card accent">
+            <div class="info-card-val">21<span class="unit">NM</span></div>
+            <div class="info-card-label">at narrowest<span class="jp">最狭部</span></div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-val">~20<span class="unit">%</span></div>
+            <div class="info-card-label">global oil shipping<span class="jp">世界石油輸送</span></div>
+          </div>
+          <div class="info-card" style="grid-column: 1 / -1;">
+            <div class="info-card-val">~3,000</div>
+            <div class="info-card-label">vessels per month<span class="jp">月間通航数</span></div>
+          </div>
+        </div>
+
+        <p class="info-prose">The world's most strategically vital chokepoint. Twin two-mile shipping lanes — narrower than many city commutes — channel global energy.</p>
+        <p class="info-prose-jp">ペルシャ湾とオマーン湾を結ぶ、世界で最も戦略的に重要な海上のチョークポイント。往復わずか2海里ずつの航路を、世界中のタンカーが日々通過している。</p>
+
+        <div class="info-coords">
+          <span>IRAN ◀ ▶ OMAN</span>
+          <span>50 NM SCALE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="section-head">
+      <h2><span class="num-chip">02</span>History <span class="jp">開閉履歴</span></h2>
+      <div class="toggle-group">
+        <button class="toggle-btn" data-range="1w">1W</button>
+        <button class="toggle-btn active" data-range="1m">1M</button>
+        <button class="toggle-btn" data-range="6m">6M</button>
+      </div>
+    </div>
+    <div class="timeline-card">
+      <div class="timeline-grid r-1m" id="timelineGrid"></div>
+      <div class="timeline-axis" id="timelineAxis"><span>—</span><span>—</span></div>
+      <div class="timeline-summary" id="timelineSummary"></div>
+    </div>
+
+    <!-- INCIDENTS -->
+    <div class="section-head">
+      <h2><span class="num-chip">03</span>Incidents <span class="jp">最新事案</span></h2>
+      <span class="section-meta" id="incidentMeta">— EVENTS</span>
+    </div>
+    <div class="incident-grid" id="incidentList">
+      <div class="incident">
+        <div class="incident-date">LOADING···</div>
+        <div class="incident-icon"></div>
+        <div class="incident-content">
+          <div class="incident-text-en"><span class="skeleton dark" style="width: 80%;"></span></div>
+          <div class="incident-text-jp"><span class="skeleton dark" style="width: 60%;"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="colophon">
+      <div><strong>SOURCES</strong> <span id="sources">—</span></div>
+      <div><strong>FETCHED</strong> · <span id="lastUpdatedFooter">—</span></div>
+    </footer>
+
+    <!-- ─── DISCLAIMER ─────────────────────── -->
+    <section class="disclaimer">
+      <h4>About this data / 情報について</h4>
+
+      <div class="disclaimer-tiers">
+        <span class="disclaimer-tier"><span class="tier-dot tier-1"></span>PRIMARY — UKMTO, IMO, navy &amp; government statements</span>
+        <span class="disclaimer-tier"><span class="tier-dot tier-2"></span>WIRE — Reuters, AP, Bloomberg</span>
+        <span class="disclaimer-tier"><span class="tier-dot tier-3"></span>MEDIA — CNN, Al Jazeera, NYT, NBC</span>
+      </div>
+
+      <p>This dashboard aggregates and summarizes publicly available reporting on the Strait of Hormuz via web search. Sources are tiered by directness: primary (official maritime/government statements), wire (international wire services), and secondary (general media). Tap any source pill or incident link to read the original article. Each AI-generated summary should be cross-checked against the cited primary source before relying on it.</p>
+
+      <p class="jp">本ダッシュボードは、ホルムズ海峡に関する公開情報をWeb検索で収集・要約したものです。情報源は信頼度別に3段階（一次：UKMTOやIMOなどの公式情報／通信社：ロイター、AP、ブルームバーグ／報道：CNN、アルジャジーラ、NYT等）に分類しています。各情報のリンクから原典をご確認ください。AIが要約した内容は必ず一次情報源で照合してから利用してください。</p>
+
+      <p><strong>Not for operational decisions.</strong> Status classifications (OPEN/DISRUPTED/CLOSED), traffic estimates, and incident summaries are AI-generated interpretations of news reporting and are <strong>not</strong> a substitute for professional maritime intelligence. Vessel routing, insurance, energy trading, and security decisions must rely on dedicated services such as Lloyd's List Intelligence, Windward, Pole Star, or direct UKMTO advisories.</p>
+
+      <p class="jp"><strong>業務判断にはご利用いただけません。</strong>ステータス分類・通航量推定・事案サマリはAIによる要約解釈であり、専門の海事インテリジェンスサービスの代替にはなりません。船舶のルート選定、保険、エネルギートレーディング、安全保障判断には、Lloyd's List Intelligence、Windward、Pole Star、UKMTO等の専門サービスをご利用ください。</p>
+
+      <p>Information is fetched at the time you open or refresh this page. Status may lag breaking events by minutes to hours depending on when reporting reaches the indexed web. Confidence indicators (HIGH/MEDIUM/LOW) reflect agreement across cited sources at fetch time.</p>
+
+      <p class="jp">情報はページを開く・更新するタイミングで取得されます。状態の変化は、報道がWebに反映されるまでの時間（数分〜数時間）の遅延が発生する可能性があります。信頼度（HIGH/MEDIUM/LOW）は取得時点での情報源間の一致度を示します。</p>
+
+      <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule, #c8c1ad); font-size: 10px;">© <span id="discYear">2026</span> · Built with Anthropic Claude API · Not affiliated with UKMTO, IMO, IRGC, or any government body · Use at your own discretion.</p>
+    </section>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="modal-bg" id="settingsModal">
+    <div class="modal">
+      <h3><span class="num-chip">⚙</span>Settings</h3>
+      <p class="modal-sub">
+        Enter your Anthropic API key to fetch live Strait data.
+        <span class="jp">海峡のライブデータ取得には Anthropic API キーが必要です。キーはこのブラウザにのみ保存されます。</span>
+      </p>
+
+      <div class="modal-row">
+        <label class="modal-label">Anthropic API Key <span class="jp">APIキー</span></label>
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+        <div class="modal-help">
+          Get your key at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com/settings/keys</a>
+        </div>
+      </div>
+
+      <div id="testResult"></div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" id="testApiKey">🔧 TEST</button>
+        <button class="btn-primary" id="saveApiKey">SAVE / 保存</button>
+        <button class="btn-secondary" id="closeSettings">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ─── API KEY MANAGEMENT ──────────────── */
+    const STORAGE_KEY = 'hormuz_anthropic_key';
+
+    function getApiKey() {
+      try { return localStorage.getItem(STORAGE_KEY) || ''; } catch (e) { return ''; }
+    }
+    function setApiKey(k) {
+      try { localStorage.setItem(STORAGE_KEY, k); } catch (e) {}
+    }
+
+    function openSettings() {
+      const m = document.getElementById('settingsModal');
+      document.getElementById('apiKeyInput').value = getApiKey();
+      document.getElementById('testResult').innerHTML = '';
+      m.classList.add('show');
+    }
+    function closeSettings() {
+      document.getElementById('settingsModal').classList.remove('show');
+    }
+    document.getElementById('openSettings').addEventListener('click', openSettings);
+    document.getElementById('closeSettings').addEventListener('click', closeSettings);
+    document.getElementById('settingsModal').addEventListener('click', (e) => {
+      if (e.target.id === 'settingsModal') closeSettings();
+    });
+
+    document.getElementById('saveApiKey').addEventListener('click', () => {
+      const v = document.getElementById('apiKeyInput').value.trim();
+      setApiKey(v);
+      closeSettings();
+      if (v) load();
+    });
+
+    document.getElementById('testApiKey').addEventListener('click', async () => {
+      const v = document.getElementById('apiKeyInput').value.trim();
+      const r = document.getElementById('testResult');
+      if (!v) {
+        r.innerHTML = '<div class="test-result err">⚠ API key is empty</div>';
+        return;
+      }
+      r.innerHTML = '<div class="test-result" style="background: var(--bg);">Testing…</div>';
+      try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': v,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 16,
+            messages: [{ role: 'user', content: 'Reply with only: OK' }]
+          })
+        });
+        if (resp.ok) {
+          r.innerHTML = '<div class="test-result ok">✓ Connection OK / 接続成功</div>';
+        } else {
+          const txt = await resp.text();
+          r.innerHTML = '<div class="test-result err">✗ HTTP ' + resp.status + ': ' + escapeHtml(txt.slice(0, 120)) + '</div>';
+        }
+      } catch (e) {
+        r.innerHTML = '<div class="test-result err">✗ ' + escapeHtml(String(e.message || e)) + '</div>';
+      }
+    });
+
+    /* ─── ICONS ──────────────────────────── */
+    const icons = {
+      attack: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4 L20 4 L20 10"/><path d="M20 4 L9 15"/><circle cx="6" cy="18" r="2.5" fill="currentColor" opacity="0.25" stroke="none"/><path d="M3 21 L7 17 M3 21 L3 17 M3 21 L7 21"/></svg>',
+      escalation: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L22 20 L2 20 Z"/><path d="M12 10 L12 14"/><circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/></svg>',
+      diplomatic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L7 11 L11 15 L15 11 L19 11 L21 13"/><path d="M11 15 L9 17"/><path d="M3 13 L3 9 M21 11 L21 15"/></svg>',
+      deescalation: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12 L11 15 L16 9"/></svg>',
+      shipping: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18 Q 5 20 8 18 T 14 18 T 20 18"/><path d="M4 14 L20 14 L18 9 L6 9 Z"/><path d="M12 9 L12 5 L16 7 L12 7"/></svg>',
+      military: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7 L12 21"/><path d="M5 13 L19 13"/><path d="M5 13 Q 5 19 12 21 Q 19 19 19 13"/></svg>',
+      default: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg>'
+    };
+
+    /* ─── CLOCK ──────────────────────────── */
+    function updateClock() {
+      const now = new Date();
+      const fmt = new Intl.DateTimeFormat('en-GB', {
+        hour: '2-digit', minute: '2-digit',
+        hour12: false, timeZone: 'Asia/Tokyo'
+      });
+      const el = document.getElementById('datetime');
+      if (el) el.textContent = fmt.format(now) + ' JST';
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // Set disclaimer year
+    const yEl = document.getElementById('discYear');
+    if (yEl) yEl.textContent = String(new Date().getFullYear());
+
+    /* ─── HELPERS ────────────────────────── */
+    const daysSince = (s) => {
+      const d = new Date(s);
+      if (isNaN(d)) return 0;
+      return Math.max(0, Math.floor((Date.now() - d) / 86400000));
+    };
+    const fmtDate = (s) => {
+      const d = new Date(s);
+      if (isNaN(d)) return s;
+      return d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+    };
+    const fmtDateLong = (s) => {
+      const d = new Date(s);
+      if (isNaN(d)) return s;
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    };
+    const fmtDateJp = (s) => {
+      const d = new Date(s);
+      if (isNaN(d)) return s;
+      return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
+    };
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function dateNDaysAgo(n) {
+      const d = new Date();
+      d.setHours(0,0,0,0);
+      d.setDate(d.getDate() - n);
+      return d;
+    }
+    function statusOn(transitions, dateObj) {
+      if (!transitions || transitions.length === 0) return 'OPEN';
+      const sorted = transitions.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+      let current = 'OPEN';
+      for (const t of sorted) {
+        if (new Date(t.date) <= dateObj) current = t.status;
+        else break;
+      }
+      return current;
+    }
+    function findStatusSince(transitions, currentStatus) {
+      if (!transitions || transitions.length === 0) return null;
+      const sorted = transitions.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+      for (const t of sorted) {
+        if (t.status === currentStatus) return t.date;
+      }
+      return sorted[0].date;
+    }
+
+    /* ─── API CALL ───────────────────────── */
+    async function fetchStatus() {
+      const apiKey = getApiKey();
+      if (!apiKey) {
+        const err = new Error('API key not set. Click ⚙ in the header to add it.');
+        err.needsKey = true;
+        throw err;
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+      const prompt = 'You are gathering Strait of Hormuz shipping status. Today is ' + today + '.\n\n' +
+        'PRIORITIZE PRIMARY SOURCES in this order:\n' +
+        '1. UKMTO advisories (ukmto.org) — UK Maritime Trade Operations\n' +
+        '2. IMO official statements (imo.org)\n' +
+        '3. US Fifth Fleet / NAVCENT statements (cusnc.navy.mil)\n' +
+        '4. IRGC / Iran government official statements\n' +
+        '5. Lloyd\'s List Intelligence reports (lloydslist.com)\n' +
+        '6. Windward maritime data (insights.windward.ai)\n' +
+        '7. Reuters, AP, Bloomberg (wire services)\n' +
+        '8. Al Jazeera, CNN, NBC, NYT (general media — secondary)\n\n' +
+        'Search the most authoritative sources first. Cross-reference at least 2 sources before reporting status.\n\n' +
+        'Respond with ONLY a JSON object — no preamble, no markdown:\n\n' +
+        '{\n' +
+        '  "status": "OPEN" or "DISRUPTED" or "CLOSED",\n' +
+        '  "status_jp": "通行可能" or "混乱" or "封鎖",\n' +
+        '  "headline_en": "single sentence, max 22 words, factual not editorial",\n' +
+        '  "headline_jp": "30字程度",\n' +
+        '  "traffic_pct": <integer 0-100, only if you can cite a specific source for this number; otherwise null>,\n' +
+        '  "traffic_pct_source": "domain.com or null",\n' +
+        '  "advisory_level": "LOW" or "ELEVATED" or "HIGH" or "CRITICAL",\n' +
+        '  "advisory_source": "UKMTO" or "JMIC" or "OTHER" or null,\n' +
+        '  "confidence": "HIGH" if multiple primary sources agree, "MEDIUM" if mixed signals, "LOW" if mostly secondary reporting,\n' +
+        '  "transitions": [{"date": "YYYY-MM-DD", "status": "OPEN" or "DISRUPTED" or "CLOSED"}],\n' +
+        '  "incidents": [{"date": "YYYY-MM-DD", "type": "attack" or "escalation" or "diplomatic" or "deescalation" or "shipping" or "military", "summary_en": "max 14 words", "summary_jp": "簡潔に", "source_url": "full https URL of the article", "source_domain": "domain.com", "tier": 1 if from PRIMARY sources 1-6 above, 2 if wire service (7), 3 if secondary media (8)}],\n' +
+        '  "sources": [{"name": "Source Name", "url": "https://...", "tier": 1 or 2 or 3, "accessed": "' + today + '"}]\n' +
+        '}\n\n' +
+        'transitions: cover 6 months, 3-8 entries, oldest >=180 days ago.\n' +
+        'incidents: 6-10 newest first. Always include source_url with the actual article URL.\n' +
+        'sources: 3-6 sources actually used. Tier 1 = primary (UKMTO/IMO/Navy/IRGC/Lloyds/Windward). Tier 2 = wire (Reuters/AP/Bloomberg). Tier 3 = secondary (CNN/AlJazeera/NYT/NBC).\n' +
+        'If primary sources are unavailable or contradict secondary reporting, set confidence to MEDIUM or LOW and note in headline.';
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 4000,
+          messages: [{ role: 'user', content: prompt }],
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error('HTTP ' + response.status + ': ' + errText.slice(0, 200));
+      }
+
+      const data = await response.json();
+      const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+      const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
+      const m = cleaned.match(/\{[\s\S]*\}/);
+      if (!m) throw new Error('No JSON in model response');
+      return JSON.parse(m[0]);
+    }
+
+    /* ─── STATE ──────────────────────────── */
+    let currentData = null;
+    let currentRange = '1m';
+
+    /* ─── TIMELINE ───────────────────────── */
+    function renderTimeline(range) {
+      currentRange = range;
+      const grid = document.getElementById('timelineGrid');
+      const axis = document.getElementById('timelineAxis');
+      const summary = document.getElementById('timelineSummary');
+      grid.className = 'timeline-grid r-' + range;
+
+      if (!currentData) return;
+
+      const days = range === '1w' ? 7 : (range === '1m' ? 30 : 180);
+      const transitions = currentData.transitions || [];
+      const incidents = currentData.incidents || [];
+
+      const incidentMap = {};
+      incidents.forEach(inc => {
+        const key = (inc.date || '').slice(0, 10);
+        if (!incidentMap[key]) incidentMap[key] = [];
+        incidentMap[key].push(inc);
+      });
+
+      grid.innerHTML = '';
+      const cells = [];
+      const counts = { OPEN: 0, DISRUPTED: 0, CLOSED: 0, attacks: 0 };
+
+      for (let i = days - 1; i >= 0; i--) {
+        const d = dateNDaysAgo(i);
+        const dateStr = d.toISOString().split('T')[0];
+        const status = statusOn(transitions, d);
+        const dayIncidents = incidentMap[dateStr] || [];
+        const hasAttack = dayIncidents.some(x => x.type === 'attack');
+        cells.push({ date: d, dateStr: dateStr, status: status, dayIncidents: dayIncidents, hasAttack: hasAttack });
+        counts[status]++;
+        if (hasAttack) counts.attacks++;
+      }
+
+      cells.forEach((c, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'day-cell s-' + c.status + (c.hasAttack ? ' has-attack' : '') + ' fade-in';
+        cell.style.animationDelay = (idx * 6) + 'ms';
+        cell.setAttribute('tabindex', '0');
+
+        let inner = '';
+        if (range === '1w') {
+          const dayName = c.date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+          inner += '<div class="cell-day">' + dayName + '</div>';
+          inner += '<div class="cell-date">' + c.date.getDate() + '</div>';
+          if (c.hasAttack) {
+            inner += '<div class="cell-incident-marker t-attack">' + icons.attack + '</div>';
+          } else if (c.dayIncidents.length > 0) {
+            const t = c.dayIncidents[0].type || 'default';
+            inner += '<div class="cell-incident-marker t-' + t + '">' + (icons[t] || icons.default) + '</div>';
+          }
+        } else if (range === '1m') {
+          if (c.dayIncidents.length > 0) {
+            const t = c.hasAttack ? 'attack' : (c.dayIncidents[0].type || 'default');
+            inner += '<div class="cell-incident-marker t-' + t + '"></div>';
+          }
+        }
+
+        const incLabel = c.dayIncidents.length > 0 ? ' · ' + c.dayIncidents.length + ' inc' : '';
+        inner += '<div class="cell-tip">' + fmtDate(c.dateStr) + ' · ' + c.status + incLabel + '</div>';
+
+        cell.innerHTML = inner;
+        grid.appendChild(cell);
+      });
+
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const fmtAxis = (d) => months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+      axis.innerHTML = '<span>' + fmtAxis(cells[0].date) + '</span><span>' + fmtAxis(cells[cells.length-1].date) + '</span>';
+
+      summary.innerHTML =
+        '<span class="ts-pill s-OPEN"><span class="num">' + counts.OPEN + '</span>OPEN</span>' +
+        '<span class="ts-pill s-DISRUPTED"><span class="num">' + counts.DISRUPTED + '</span>DISRUPTED</span>' +
+        '<span class="ts-pill s-CLOSED"><span class="num">' + counts.CLOSED + '</span>CLOSED</span>' +
+        '<span class="ts-pill attack">' + icons.attack + '<span class="num">' + counts.attacks + '</span>ATTACKS</span>';
+    }
+
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTimeline(btn.dataset.range);
+      });
+    });
+
+    /* ─── RENDER ─────────────────────────── */
+    function render(d) {
+      currentData = d;
+      document.body.setAttribute('data-status', d.status);
+
+      const setText = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = txt; el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in'); }
+      };
+      setText('statusEn', d.status);
+      setText('statusJp', d.status_jp);
+      setText('headlineEn', d.headline_en);
+      setText('headlineJp', d.headline_jp);
+      setText('vizStatusText', d.status);
+
+      const sinceDate = findStatusSince(d.transitions || [], d.status);
+      if (sinceDate) {
+        const days = daysSince(sinceDate);
+        const verb = d.status === 'OPEN' ? 'OPEN since' : (d.status === 'CLOSED' ? 'CLOSED since' : 'DISRUPTED since');
+        const verbJp = d.status === 'OPEN' ? 'より通行可能' : (d.status === 'CLOSED' ? 'より封鎖' : 'より混乱状態');
+        document.getElementById('sinceLabel').textContent = verb + ' ' + fmtDateLong(sinceDate);
+        document.getElementById('sinceNum').textContent = 'DAY ' + (days + 1);
+        document.getElementById('sinceJp').textContent = fmtDateJp(sinceDate) + verbJp;
+      }
+
+      const recentAttacks = (d.incidents || []).filter(inc => inc.type === 'attack' && daysSince(inc.date) <= 7);
+      const alertPill = document.getElementById('alertPill');
+      if (recentAttacks.length > 0) {
+        document.getElementById('alertIcon').innerHTML = icons.attack;
+        document.getElementById('alertText').textContent = recentAttacks.length + ' ATTACK' + (recentAttacks.length > 1 ? 'S' : '') + ' · 7D';
+        alertPill.hidden = false;
+      } else {
+        alertPill.hidden = true;
+      }
+
+      document.getElementById('kTraffic').innerHTML = d.traffic_pct + '<span class="unit">%</span>';
+      document.getElementById('kAttacks').textContent = recentAttacks.length;
+      const kAtkIcon = document.getElementById('kAttacksIcon');
+      if (recentAttacks.length > 0) {
+        kAtkIcon.innerHTML = icons.attack;
+        kAtkIcon.hidden = false;
+      } else {
+        kAtkIcon.hidden = true;
+      }
+
+      setText('kAdvisory', d.advisory_level || '—');
+
+      if (d.incidents && d.incidents.length) {
+        const lastDays = daysSince(d.incidents[0].date);
+        document.getElementById('kLast').innerHTML = lastDays + '<span class="unit">d</span>';
+        document.getElementById('kLastTag').textContent = lastDays === 0 ? 'TODAY' : (lastDays === 1 ? 'DAY AGO' : 'DAYS AGO');
+      }
+
+      // Confidence indicator
+      const confEl = document.getElementById('confidenceBadge');
+      if (confEl && d.confidence) {
+        confEl.className = 'conf-badge conf-' + d.confidence;
+        confEl.innerHTML = '<span class="conf-dot"></span>' + d.confidence + ' CONFIDENCE';
+        confEl.hidden = false;
+      } else if (confEl) {
+        confEl.hidden = true;
+      }
+
+      const list = document.getElementById('incidentList');
+      list.innerHTML = '';
+      (d.incidents || []).forEach((inc, i) => {
+        const t = inc.type || 'default';
+        const iconSvg = icons[t] || icons.default;
+        const dRel = daysSince(inc.date);
+        const relText = dRel === 0 ? 'today' : (dRel === 1 ? '1 day ago' : (dRel + ' days ago'));
+        const tier = inc.tier || 3;
+        const sourceUrl = inc.source_url || '';
+        const sourceDomain = inc.source_domain || '';
+
+        const tierLabel = tier === 1 ? 'PRIMARY' : (tier === 2 ? 'WIRE' : 'MEDIA');
+        let sourceLink = '';
+        if (sourceUrl) {
+          sourceLink = '<a href="' + escapeHtml(sourceUrl) + '" target="_blank" rel="noopener" class="incident-source">' +
+            '<span class="tier-dot tier-' + tier + '"></span>' +
+            '<span class="tier-label">' + tierLabel + '</span>' +
+            '<span class="source-domain">' + escapeHtml(sourceDomain) + '</span>' +
+            '<span class="source-arrow">↗</span>' +
+            '</a>';
+        }
+
+        const div = document.createElement('div');
+        div.className = 'incident fade-in';
+        div.style.animationDelay = (i * 50) + 'ms';
+
+        div.innerHTML =
+          '<div class="incident-date">' + fmtDate(inc.date) + '<span class="relative">' + relText + '</span></div>' +
+          '<div class="incident-icon t-' + t + '">' + iconSvg + '</div>' +
+          '<div class="incident-content">' +
+            '<span class="type-tag">' + t + '</span>' +
+            '<div class="incident-text-en">' + escapeHtml(inc.summary_en) + '</div>' +
+            '<div class="incident-text-jp">' + escapeHtml(inc.summary_jp) + '</div>' +
+            sourceLink +
+          '</div>';
+        list.appendChild(div);
+      });
+
+      const incCount = (d.incidents || []).length;
+      document.getElementById('incidentMeta').textContent = incCount + ' EVENT' + (incCount !== 1 ? 'S' : '');
+
+      // Sources rendered as clickable pills with tier indicators
+      const srcEl = document.getElementById('sources');
+      const sources = d.sources || [];
+      if (sources.length > 0 && typeof sources[0] === 'object') {
+        srcEl.innerHTML = sources.map(s => {
+          const tier = s.tier || 3;
+          const tierLabel = tier === 1 ? 'PRIMARY' : (tier === 2 ? 'WIRE' : 'MEDIA');
+          const url = s.url || '#';
+          const name = s.name || s.url || '—';
+          return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener" class="source-pill">' +
+            '<span class="tier-dot tier-' + tier + '"></span>' +
+            '<span class="source-tier">' + tierLabel + '</span>' +
+            '<span class="source-name">' + escapeHtml(name) + '</span>' +
+            '</a>';
+        }).join('');
+      } else {
+        // backward-compat with array of strings
+        srcEl.textContent = sources.join(' · ');
+      }
+
+      const fmt = new Intl.DateTimeFormat('en-GB', {
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false, timeZone: 'Asia/Tokyo'
+      });
+      document.getElementById('lastUpdatedFooter').textContent = fmt.format(new Date()) + ' JST';
+
+      renderTimeline(currentRange);
+    }
+
+    function showError(err) {
+      console.error('[Hormuz]', err);
+      const isKeyErr = err.needsKey;
+      document.getElementById('statusEn').textContent = isKeyErr ? 'SETUP' : 'ERROR';
+      document.getElementById('statusJp').textContent = isKeyErr ? '初期設定' : '取得失敗';
+      document.getElementById('headlineEn').textContent = isKeyErr
+        ? 'Welcome. Click the gear icon ⚙ in the header to add your Anthropic API key.'
+        : 'Unable to retrieve live data. Press REFRESH or check your API key in settings.';
+      document.getElementById('headlineJp').textContent = isKeyErr
+        ? 'ヘッダーの歯車アイコン⚙をタップして、Anthropic APIキーを設定してください。'
+        : 'ライブデータの取得に失敗しました。設定からAPIキーを確認してください。';
+      document.getElementById('sinceLabel').textContent = '—';
+      document.getElementById('sinceNum').textContent = 'DAY —';
+      document.getElementById('sinceJp').textContent = '—';
+
+      const list = document.getElementById('incidentList');
+      list.innerHTML =
+        '<div class="incident">' +
+          '<div class="incident-date">' + fmtDate(new Date()) + '</div>' +
+          '<div class="incident-icon t-' + (isKeyErr ? 'diplomatic' : 'escalation') + '">' + icons[isKeyErr ? 'diplomatic' : 'escalation'] + '</div>' +
+          '<div class="incident-content">' +
+            '<span class="type-tag">' + (isKeyErr ? 'setup' : 'error') + '</span>' +
+            '<div class="incident-text-en">' + escapeHtml(String(err.message || err)) + '</div>' +
+            '<div class="incident-text-jp">' + (isKeyErr ? '右上の⚙アイコンから設定できます。' : 'エラー詳細はコンソールを確認してください。') + '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    async function load() {
+      const btn = document.getElementById('refresh');
+      btn.disabled = true;
+      const original = btn.textContent;
+      btn.textContent = 'FETCHING···';
+      try {
+        const data = await fetchStatus();
+        render(data);
+      } catch (e) {
+        showError(e);
+        if (e.needsKey) {
+          setTimeout(() => openSettings(), 600);
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = original;
+      }
+    }
+
+    document.getElementById('refresh').addEventListener('click', load);
+    load();
+  </script>
+</body>
+</html>
