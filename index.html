@@ -159,45 +159,47 @@
 
   /* ─── DEMO CTA BANNER ──────────────────── */
   .demo-cta {
-    margin-top: 14px;
-    padding: 14px 22px;
-    background: #fff8e1;
+    margin-top: 12px;
+    padding: 14px 20px;
+    background: #fef9e7;
     border: 2px solid var(--ink);
     border-radius: var(--br);
     display: flex;
     align-items: center;
-    gap: 16px;
-    box-shadow: 3px 3px 0 var(--ink);
+    gap: 14px;
+    box-shadow: var(--sh);
     cursor: pointer;
     transition: transform .15s, box-shadow .15s;
   }
   .demo-cta:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0 var(--ink);
+    transform: translate(-2px, -2px);
+    box-shadow: var(--sh-deep);
+    background: #fef0c7;
   }
   .demo-cta[hidden] { display: none; }
   .demo-cta-icon {
     flex-shrink: 0;
-    width: 38px;
-    height: 38px;
-    background: #fbbf24;
-    border: 2px solid var(--ink);
+    width: 36px;
+    height: 36px;
+    background: var(--yellow);
+    border: 1.5px solid var(--ink);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 800;
   }
   .demo-cta-text {
     flex: 1;
-    line-height: 1.4;
+    line-height: 1.45;
+    min-width: 0;
   }
   .demo-cta-text strong {
     font-size: 13px;
     font-weight: 800;
     color: var(--ink);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
   }
   .demo-cta-text .jp {
     display: block;
@@ -205,22 +207,24 @@
     font-size: 11px;
     font-weight: 500;
     color: var(--mute);
-    margin-top: 2px;
+    margin-top: 3px;
+    line-height: 1.55;
   }
   .demo-cta-action {
     flex-shrink: 0;
     background: var(--ink);
     color: var(--card);
-    padding: 9px 16px;
+    padding: 9px 15px;
     border-radius: 100px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 800;
-    letter-spacing: 0.08em;
-    border: 2px solid var(--ink);
+    letter-spacing: 0.1em;
+    border: 1.5px solid var(--ink);
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
   }
   .mode-demo {
     background: #fbbf24;
@@ -411,6 +415,44 @@
     line-height: 1.75;
     opacity: 0.88;
     max-width: 30em;
+  }
+
+  /* AI estimate notice — sits below headline as editorial footnote */
+  .ai-notice {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid color-mix(in srgb, var(--card) 30%, transparent);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    color: color-mix(in srgb, var(--card) 85%, transparent);
+  }
+  .ai-notice-mark {
+    flex-shrink: 0;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+    opacity: 0.75;
+    margin-top: 1px;
+  }
+  .ai-notice-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 11px;
+    line-height: 1.55;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  .ai-notice-text .jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-style: normal;
+    font-size: 10.5px;
+    opacity: 0.85;
+    letter-spacing: 0;
+    line-height: 1.7;
   }
 
   /* STRAIT VIZ */
@@ -688,23 +730,26 @@
   .map-side svg { width: 100%; height: auto; max-height: 460px; color: var(--accent); transition: color .5s; }
   .info-side { padding: 32px; display: flex; flex-direction: column; gap: 22px; }
 
-  .info-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .info-card { padding: 16px; background: var(--bg); border: 2px solid var(--ink); border-radius: var(--br-sm); }
-  .info-card.accent { background: var(--accent); color: var(--card); }
-  .info-card.accent .info-card-label { color: var(--card); opacity: 0.85; }
+  .info-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .info-card {
+    padding: 16px 16px 14px;
+    background: var(--bg);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--br-sm);
+  }
   .info-card-val {
     font-weight: 900;
     font-size: 30px;
     letter-spacing: -0.04em;
     line-height: 1;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
-  .info-card-val .unit { font-size: 14px; opacity: 0.7; margin-left: 2px; }
+  .info-card-val .unit { font-size: 13px; opacity: 0.65; margin-left: 2px; font-weight: 700; }
   .info-card-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 9.5px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--mute);
     line-height: 1.3;
@@ -715,24 +760,32 @@
     font-size: 10px;
     text-transform: none;
     letter-spacing: 0.04em;
-    margin-top: 3px;
-    opacity: 0.85;
+    margin-top: 4px;
+    opacity: 0.9;
     font-weight: 500;
   }
 
-  .info-prose { font-size: 14.5px; line-height: 1.55; color: var(--ink); text-wrap: pretty; }
-  .info-prose-jp { font-family: 'Noto Sans JP', sans-serif; font-size: 11.5px; color: var(--mute); line-height: 1.8; }
+  .info-prose { font-size: 14.5px; line-height: 1.6; color: var(--ink); text-wrap: pretty; }
+  .info-prose-jp { font-family: 'Noto Sans JP', sans-serif; font-size: 11.5px; color: var(--mute); line-height: 1.85; }
   .info-coords {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.15em;
     color: var(--mute);
     text-transform: uppercase;
-    padding-top: 14px;
-    border-top: 2px dashed var(--mute);
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
     font-weight: 600;
+  }
+  .info-coords span:last-child {
+    font-family: 'Noto Sans JP', sans-serif;
+    text-transform: none;
+    letter-spacing: 0.04em;
+    font-weight: 500;
   }
 
   .ring { transform-origin: center; transform-box: fill-box; }
@@ -1008,84 +1061,89 @@
   }
 
   .colophon {
-    margin-top: 40px;
-    padding: 20px 24px;
+    margin-top: 36px;
+    padding: 18px 22px;
     background: var(--card);
-    border: 2px solid var(--ink);
+    border: 1.5px solid var(--ink);
     border-radius: var(--br);
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 24px;
+    gap: 20px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.06em;
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--mute);
     font-weight: 600;
+    line-height: 1.6;
   }
-  .colophon strong { color: var(--ink); font-weight: 700; }
+  .colophon strong { color: var(--ink); font-weight: 800; letter-spacing: 0.12em; margin-right: 6px; }
 
   /* ─── VISITOR STATS ──────────────────────── */
   .visitors {
-    margin-top: 16px;
-    padding: 18px 24px;
+    margin-top: 14px;
+    padding: 14px 22px;
     background: var(--card);
-    border: 2px solid var(--ink);
+    border: 1.5px solid var(--ink);
     border-radius: var(--br);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px 24px;
+    gap: 10px 22px;
   }
   .visitors[hidden] { display: none; }
   .vis-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
     color: var(--ink);
-    border-right: 1.5px solid var(--ink);
-    padding-right: 16px;
+    border-right: 1px solid var(--rule);
+    padding-right: 18px;
     margin-right: 4px;
+    text-transform: uppercase;
   }
   .vis-total {
     display: inline-flex;
     align-items: baseline;
     gap: 8px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     color: var(--mute);
+    text-transform: uppercase;
   }
   .vis-total strong {
     background: var(--ink);
     color: var(--card);
-    padding: 4px 12px;
+    padding: 3px 11px;
     border-radius: 100px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 800;
+    letter-spacing: 0.04em;
   }
   .vis-divider {
     width: 1px;
-    height: 18px;
-    background: var(--ink);
-    opacity: 0.3;
+    height: 16px;
+    background: var(--rule);
   }
   .vis-region {
     display: inline-flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 5px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     color: var(--mute);
+    text-transform: uppercase;
   }
   .vis-region strong {
     color: var(--ink);
     font-weight: 800;
-    font-size: 12px;
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
   }
   .vis-region.active {
     color: var(--accent);
@@ -1181,15 +1239,16 @@
   .conf-badge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    background: rgba(255,255,255,0.18);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255,255,255,0.35);
+    gap: 7px;
+    padding: 5px 12px;
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1.5px solid rgba(255,255,255,0.4);
     border-radius: 100px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    font-weight: 700;
+    font-size: 9.5px;
+    font-weight: 800;
     letter-spacing: 0.1em;
     color: var(--card);
   }
@@ -1198,10 +1257,11 @@
     width: 7px; height: 7px;
     border-radius: 50%;
     background: var(--card);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
   }
-  .conf-HIGH .conf-dot { background: #84cc16; }
+  .conf-HIGH .conf-dot { background: #a3e635; }
   .conf-MEDIUM .conf-dot { background: #fbbf24; }
-  .conf-LOW .conf-dot { background: #f87171; }
+  .conf-LOW .conf-dot { background: #fb7185; }
 
   /* ─── DISCLAIMER FOOTER ──────────────────── */
   .disclaimer {
@@ -1490,13 +1550,22 @@
     .pill { padding: 4px 8px; font-size: 9px; }
     .conf-badge { padding: 3px 8px; font-size: 8.5px; }
 
+    .timeline-grid.r-1w { gap: 4px; }
     .timeline-grid.r-1m { grid-template-columns: repeat(30, 1fr); gap: 1.5px; }
     .timeline-grid.r-6m { grid-template-columns: repeat(30, 1fr); }
     .r-1m .day-cell { height: 24px; }
     .r-6m .day-cell { height: 24px; }
-    .r-1w .cell-date { font-size: 16px; }
-    .r-1w .cell-day { font-size: 8px; }
-    .r-1w .day-cell { padding: 4px; min-height: 50px; }
+    .r-1w .day-cell {
+      aspect-ratio: auto;
+      min-height: 0;
+      height: 60px;
+      padding: 5px 3px;
+      border-radius: 6px;
+    }
+    .r-1w .cell-date { font-size: 17px; margin: 1px 0 2px; }
+    .r-1w .cell-day { font-size: 8px; letter-spacing: 0.05em; }
+    .r-1w .cell-incident-marker { width: 12px; height: 12px; bottom: 2px; right: 2px; }
+    .r-1w .cell-incident-marker svg { width: 7px; height: 7px; }
 
     .kpi-value { font-size: 30px; }
     .kpi-label { font-size: 11px; }
@@ -1529,6 +1598,8 @@
     .vis-divider { display: none; }
     .vis-region { font-size: 9px; }
     .vis-region strong { font-size: 11px; }
+
+    .timeline-card { padding: 18px 14px 16px; }
 
     .disclaimer { padding: 16px 18px; font-size: 10.5px; }
 
@@ -1587,6 +1658,14 @@
         <div class="hero-headline">
           <p class="headline-en" id="headlineEn"><span class="skeleton" style="width: 90%;"></span></p>
           <p class="headline-jp" id="headlineJp"><span class="skeleton" style="width: 70%;"></span></p>
+        </div>
+
+        <div class="ai-notice">
+          <span class="ai-notice-mark">※</span>
+          <div class="ai-notice-text">
+            <span>AI-generated estimate from open news sources. Cross-check primary sources before relying on this.</span>
+            <span class="jp">本ステータスは公開情報からのAI推論です。判断の根拠は一次情報源でご確認ください。</span>
+          </div>
         </div>
       </div>
 
@@ -1884,15 +1963,22 @@
             <text x="566" y="280" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="800" fill="#fff" letter-spacing="0.5">21 NM</text>
           </g>
 
-          <!-- ─── COUNTRY LABELS (3 only) ─────── -->
-          <text x="44" y="80" font-family="Inter Tight" font-size="44" font-weight="900" fill="#0a0a0a" letter-spacing="-0.05em">IRAN</text>
-          <text x="36" y="430" font-family="Inter Tight" font-size="34" font-weight="900" fill="#0a0a0a" letter-spacing="-0.05em">U.A.E.</text>
-          <text x="478" y="465" font-family="Inter Tight" font-size="34" font-weight="900" fill="#0a0a0a" letter-spacing="-0.05em">OMAN</text>
+          <!-- ─── COUNTRY LABELS ─────── -->
+          <!--
+            Editorial cartography style:
+            - Equal weight (800) across all countries
+            - Sized by territorial presence on the map (IRAN biggest, OMAN smaller, UAE smallest)
+            - Positive letter-spacing (0.04-0.08em) for breathing room
+            - "UAE" without periods for cleaner reading
+          -->
+          <text x="44" y="80" font-family="Inter Tight" font-size="38" font-weight="800" fill="#0a0a0a" letter-spacing="0.04em">IRAN</text>
+          <text x="36" y="430" font-family="Inter Tight" font-size="26" font-weight="800" fill="#0a0a0a" letter-spacing="0.08em">UAE</text>
+          <text x="440" y="463" font-family="Inter Tight" font-size="32" font-weight="800" fill="#0a0a0a" letter-spacing="0.05em">OMAN</text>
 
-          <!-- ─── SEA LABELS (minimal) ─────── -->
-          <text x="22" y="158" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0a0a0a" letter-spacing="2" opacity="0.7">PERSIAN GULF</text>
-          <text x="500" y="170" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0a0a0a" letter-spacing="2" opacity="0.7">GULF OF</text>
-          <text x="500" y="185" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0a0a0a" letter-spacing="2" opacity="0.7">OMAN</text>
+          <!-- ─── SEA LABELS — italic editorial style ─────── -->
+          <text x="22" y="158" font-family="Inter Tight" font-style="italic" font-size="13" font-weight="500" fill="#0a0a0a" letter-spacing="0.06em" opacity="0.75">Persian Gulf</text>
+          <text x="500" y="170" font-family="Inter Tight" font-style="italic" font-size="13" font-weight="500" fill="#0a0a0a" letter-spacing="0.06em" opacity="0.75">Gulf of</text>
+          <text x="500" y="186" font-family="Inter Tight" font-style="italic" font-size="13" font-weight="500" fill="#0a0a0a" letter-spacing="0.06em" opacity="0.75">Oman</text>
 
           <!-- ─── COMPASS (top right) ─────── -->
           <g transform="translate(560, 50)">
@@ -1934,8 +2020,8 @@
         <p class="info-prose-jp">ペルシャ湾とオマーン湾を結ぶ、世界で最も戦略的に重要な海上のチョークポイント。往復わずか2海里ずつの航路を、世界中のタンカーが日々通過している。</p>
 
         <div class="info-coords">
-          <span>IRAN ◀ ▶ OMAN</span>
-          <span>50 NM SCALE</span>
+          <span>26°34′N · 56°15′E</span>
+          <span>Sea passage · 海路</span>
         </div>
       </div>
     </div>
@@ -2234,10 +2320,16 @@
         '7. Reuters, AP, Bloomberg (wire services)\n' +
         '8. Al Jazeera, CNN, NBC, NYT (general media — secondary)\n\n' +
         'Search the most authoritative sources first. Cross-reference at least 2 sources before reporting status.\n\n' +
+        'STATUS DEFINITIONS — use these exactly:\n' +
+        '- "OPEN": Commercial shipping flowing at >70% of normal volumes, no active threat advisories beyond routine.\n' +
+        '- "DISRUPTED": Commercial shipping continuing but at reduced volumes (10-70% of normal), OR active threat advisories issued by UKMTO/Navy, OR recent (within 14 days) attacks on vessels, OR transit conditions impose extra requirements (e.g., escort, declarations, route changes).\n' +
+        '- "CLOSED": Effective full closure — commercial transit at <10% of normal, OR formal closure declared by Iran or coalition, OR international shipping companies have suspended transits.\n\n' +
+        'Be CONSERVATIVE: when in doubt between two statuses, choose the LESS severe one. Do not upgrade to CLOSED unless you have direct evidence of suspension/closure.\n\n' +
         'Respond with ONLY a JSON object — no preamble, no markdown:\n\n' +
         '{\n' +
         '  "status": "OPEN" or "DISRUPTED" or "CLOSED",\n' +
         '  "status_jp": "通行可能" or "混乱" or "封鎖",\n' +
+        '  "status_basis": "single sentence explaining which definition criteria triggered this status, citing the source",\n' +
         '  "headline_en": "single sentence, max 22 words, factual not editorial",\n' +
         '  "headline_jp": "30字程度",\n' +
         '  "traffic_pct": <integer 0-100, only if you can cite a specific source for this number; otherwise null>,\n' +
@@ -2265,6 +2357,7 @@
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 4000,
+          temperature: 0,
           messages: [{ role: 'user', content: prompt }],
           tools: [{ type: 'web_search_20250305', name: 'web_search' }]
         })
