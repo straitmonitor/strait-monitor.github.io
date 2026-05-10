@@ -859,13 +859,11 @@
     box-shadow: 3px 3px 0 var(--ink);
     z-index: 5;
   }
-  .day-cell:hover .cell-tip,
-  .day-cell:focus-visible .cell-tip { display: block; }
   .day-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   .r-1w .day-cell { aspect-ratio: 1 / 1; min-height: 64px; color: white; padding: 6px; border-radius: 8px; }
   .r-1m .day-cell { height: 36px; min-height: 24px; border-width: 1px; border-radius: 3px; }
-  .r-6m .day-cell { height: 40px; border: none; border-radius: 1px; }
+  .r-6m .day-cell { height: 36px; border-width: 1px; border-radius: 2px; }
 
   .r-1w .cell-day {
     font-family: 'JetBrains Mono', monospace;
@@ -902,35 +900,57 @@
   .cell-incident-marker.t-attack { background: var(--yellow); color: var(--ink); }
   .r-1m .cell-incident-marker { width: 6px; height: 6px; bottom: 2px; right: 2px; border-width: 1px; }
   .r-1m .cell-incident-marker svg { display: none; }
-  .r-6m .cell-incident-marker { display: none; }
-  .r-6m .day-cell.has-attack { box-shadow: inset 0 -3px 0 var(--ink); }
+  .r-6m .cell-incident-marker { width: 5px; height: 5px; bottom: 2px; right: 2px; border-width: 1px; }
+  .r-6m .cell-incident-marker svg { display: none; }
 
-  .cell-tip {
-    display: none;
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
+  /* Persistent caption bar — shows hovered day's info instead of overlapping tooltip */
+  .timeline-caption {
     background: var(--ink);
     color: var(--card);
-    padding: 6px 10px;
-    border-radius: 6px;
+    padding: 9px 14px;
+    border-radius: 8px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.04em;
-    white-space: nowrap;
-    z-index: 100;
-    pointer-events: none;
     font-weight: 600;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    min-height: 36px;
   }
-  .cell-tip::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: var(--ink);
+  .timeline-caption .tc-default {
+    opacity: 0.5;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    font-size: 10.5px;
+  }
+  .timeline-caption .tc-default .jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    margin-left: 6px;
+    opacity: 0.85;
+  }
+  .timeline-caption .tc-date {
+    font-weight: 700;
+    color: var(--card);
+    letter-spacing: 0.06em;
+  }
+  .timeline-caption .tc-status {
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-weight: 800;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+  .timeline-caption .tc-status.s-OPEN { background: var(--open); color: white; }
+  .timeline-caption .tc-status.s-DISRUPTED { background: var(--disrupted); color: white; }
+  .timeline-caption .tc-status.s-CLOSED { background: var(--closed); color: white; }
+  .timeline-caption .tc-event {
+    color: color-mix(in srgb, var(--card) 75%, transparent);
+    font-weight: 500;
+    font-size: 10.5px;
+    letter-spacing: 0.02em;
   }
 
   .timeline-axis {
@@ -2036,6 +2056,9 @@
       </div>
     </div>
     <div class="timeline-card">
+      <div class="timeline-caption" id="timelineCaption">
+        <span class="tc-default">Hover or tap a day for details <span class="jp">日付にカーソルを合わせると詳細表示</span></span>
+      </div>
       <div class="timeline-grid r-1m" id="timelineGrid"></div>
       <div class="timeline-axis" id="timelineAxis"><span>—</span><span>—</span></div>
       <div class="timeline-summary" id="timelineSummary"></div>
@@ -2441,6 +2464,11 @@
         cell.className = 'day-cell s-' + c.status + (c.hasAttack ? ' has-attack' : '') + ' fade-in';
         cell.style.animationDelay = (idx * 6) + 'ms';
         cell.setAttribute('tabindex', '0');
+        cell.dataset.date = fmtDate(c.dateStr);
+        cell.dataset.status = c.status;
+        cell.dataset.events = c.dayIncidents.length > 0
+          ? (c.dayIncidents.length + ' event' + (c.dayIncidents.length > 1 ? 's' : ''))
+          : '';
 
         let inner = '';
         if (range === '1w') {
@@ -2453,19 +2481,40 @@
             const t = c.dayIncidents[0].type || 'default';
             inner += '<div class="cell-incident-marker t-' + t + '">' + (icons[t] || icons.default) + '</div>';
           }
-        } else if (range === '1m') {
+        } else if (range === '1m' || range === '6m') {
           if (c.dayIncidents.length > 0) {
             const t = c.hasAttack ? 'attack' : (c.dayIncidents[0].type || 'default');
             inner += '<div class="cell-incident-marker t-' + t + '"></div>';
           }
         }
 
-        const incLabel = c.dayIncidents.length > 0 ? ' · ' + c.dayIncidents.length + ' inc' : '';
-        inner += '<div class="cell-tip">' + fmtDate(c.dateStr) + ' · ' + c.status + incLabel + '</div>';
-
         cell.innerHTML = inner;
         grid.appendChild(cell);
       });
+
+      // Caption bar update on hover/focus
+      const caption = document.getElementById('timelineCaption');
+      const defaultCaption = '<span class="tc-default">Hover or tap a day for details <span class="jp">日付にカーソルを合わせると詳細表示</span></span>';
+
+      function showCellCaption(cell) {
+        const date = cell.dataset.date;
+        const status = cell.dataset.status;
+        const events = cell.dataset.events;
+        let html = '<span class="tc-date">' + date + '</span>'
+                 + '<span class="tc-status s-' + status + '">' + status + '</span>';
+        if (events) html += '<span class="tc-event">· ' + events + '</span>';
+        caption.innerHTML = html;
+      }
+
+      grid.addEventListener('mouseover', e => {
+        const cell = e.target.closest('.day-cell');
+        if (cell) showCellCaption(cell);
+      });
+      grid.addEventListener('focusin', e => {
+        const cell = e.target.closest('.day-cell');
+        if (cell) showCellCaption(cell);
+      });
+      grid.addEventListener('mouseleave', () => { caption.innerHTML = defaultCaption; });
 
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       const fmtAxis = (d) => months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
