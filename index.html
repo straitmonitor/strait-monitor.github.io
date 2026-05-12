@@ -6,11 +6,16 @@
 <title>HORMUZ NOW. — Live Strait Monitor</title>
 <meta name="description" content="HORMUZ NOW. — A live, AI-augmented monitor of shipping status through the Strait of Hormuz. Editorial dashboard cross-referencing UKMTO, Lloyd's List, and primary maritime sources.">
 <meta property="og:title" content="HORMUZ NOW.">
-<meta property="og:description" content="Live Strait Monitor — editorial dashboard for shipping status through the Strait of Hormuz.">
+<meta property="og:description" content="Live editorial monitor for the Strait of Hormuz — the chokepoint carrying ~20% of global oil.">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://strait-monitor.github.io/ogp-disrupted.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://strait-monitor.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="HORMUZ NOW.">
-<meta name="twitter:description" content="Live Strait Monitor — editorial dashboard for shipping status through the Strait of Hormuz.">
+<meta name="twitter:description" content="Live editorial monitor for the Strait of Hormuz — the chokepoint carrying ~20% of global oil.">
+<meta name="twitter:image" content="https://strait-monitor.github.io/ogp-disrupted.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0a0a'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Inter Tight, sans-serif' font-weight='900' font-size='20' fill='%23ea580c' letter-spacing='-1'%3EN.%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -167,6 +172,51 @@
     letter-spacing: 0.1em;
   }
   .mode-badge[hidden] { display: none; }
+
+  /* ─── CACHE NOTICE ──────────────────── */
+  /* Subtle editorial strip showing data freshness when displaying cached data */
+  .cache-notice {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--mute);
+    align-self: flex-start;
+  }
+  .cache-notice[hidden] { display: none; }
+  .cache-notice .cache-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--mute);
+    flex-shrink: 0;
+  }
+  .cache-notice .cache-text {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .cache-notice .cache-jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0.04em;
+    border-left: 1px solid var(--rule);
+    padding-left: 10px;
+    color: var(--mute);
+    font-size: 10px;
+  }
+
+  @media (max-width: 480px) {
+    .cache-notice { font-size: 9px; padding: 6px 12px; gap: 8px; }
+    .cache-notice .cache-jp { font-size: 9px; padding-left: 8px; }
+  }
 
   /* ─── DEMO CTA BANNER ──────────────────── */
   .demo-cta {
@@ -429,6 +479,60 @@
   }
 
   /* AI estimate notice — sits below headline as editorial footnote */
+  /* Verification strip — sits in hero below headline.
+     Shows whether primary sources were consulted, latest advisory reference, and next expected update.
+     Builds trust by surfacing the verification trail.
+  */
+  .verify-strip {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: color-mix(in srgb, var(--card) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--card) 22%, transparent);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 4px 18px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .verify-strip[hidden] { display: none; }
+  .vs-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: color-mix(in srgb, var(--card) 90%, transparent);
+    font-size: 11px;
+    line-height: 1.4;
+    padding: 4px 0;
+  }
+  .vs-icon {
+    font-size: 12px;
+    opacity: 0.8;
+    line-height: 1;
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .vs-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .vs-value {
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: -0.005em;
+    margin-left: auto;
+    text-align: right;
+    min-width: 0;
+  }
+  .vs-row.confirmed .vs-icon { color: #a3e635; }
+  .vs-row.unconfirmed .vs-icon { color: #fb7185; }
+
   .ai-notice {
     margin-top: 18px;
     padding-top: 14px;
@@ -1254,6 +1358,52 @@
     border-radius: 100px;
     background: var(--bg);
   }
+
+  /* ─── VERIFICATION BADGE ──────────
+     Shows source count and verification level for each incident.
+     Builds trust by surfacing how well-confirmed each event is.
+  */
+  .event-tag-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .event-tag-row .type-tag { margin-bottom: 0; }
+  .verify-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 9px 2px 7px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+  .verify-badge .verify-icon {
+    font-size: 10px;
+    line-height: 1;
+  }
+  .verify-badge.verify-primary {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #065f46;
+  }
+  .verify-badge.verify-wire {
+    background: #fef3c7;
+    color: #78350f;
+    border-color: #78350f;
+  }
+  .verify-badge.verify-single {
+    background: var(--bg);
+    color: var(--mute);
+    border-color: var(--mute);
+    opacity: 0.85;
+  }
   .incident-text-en {
     font-weight: 600;
     font-size: 16px;
@@ -1266,6 +1416,156 @@
     font-size: 12px;
     color: var(--mute);
     line-height: 1.7;
+  }
+
+  /* ─── GROUPED SAME-DAY EVENTS ──────────────────────
+     When multiple incidents happen on the same date, they are bundled
+     into a single card with a stacked event list.
+  */
+  .incident-grouped .incident-icon {
+    /* Slight visual cue that this card represents multiple events */
+    box-shadow: 3px 3px 0 var(--rule), 0 0 0 0 transparent;
+  }
+
+  .incident-date .event-count {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 8px;
+    background: var(--ink);
+    color: var(--card);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Event item — individual event within a (possibly grouped) card */
+  .event-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .event-item + .event-item {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--rule);
+  }
+  .event-body {
+    flex: 1;
+    min-width: 0;
+    padding-top: 1px;
+  }
+
+  /* Mini icon shown for each event when grouped (helps distinguish types within the day) */
+  .event-mini-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    margin-top: 2px;
+  }
+  .event-mini-icon svg { width: 14px; height: 14px; }
+  .event-mini-icon.actor-icon { background: var(--card); color: var(--ink); }
+  .event-mini-icon.actor-icon svg { width: 20px; height: 20px; margin-top: 3px; }
+  .event-mini-icon.t-attack { background: var(--closed); color: var(--card); }
+  .event-mini-icon.t-escalation { background: var(--disrupted); color: var(--card); }
+  .event-mini-icon.t-diplomatic { background: var(--open); color: var(--card); }
+  .event-mini-icon.t-deescalation { background: var(--open); color: var(--card); }
+  .event-mini-icon.t-shipping { background: var(--yellow); color: var(--ink); }
+  .event-mini-icon.t-military { background: var(--yellow); color: var(--ink); }
+  .event-mini-icon.t-policy { background: var(--ink); color: var(--card); }
+
+  @media (max-width: 480px) {
+    .event-mini-icon { width: 24px; height: 24px; }
+    .event-mini-icon svg { width: 12px; height: 12px; }
+    .event-mini-icon.actor-icon svg { width: 17px; height: 17px; margin-top: 2px; }
+    .event-item + .event-item { margin-top: 12px; padding-top: 12px; }
+  }
+
+  /* ─── WELCOME BANNER ──────────────────
+     Shown to visitors arriving via shared links (URL has ?ref= param).
+     Provides 3-second context: "What is this?" — without disturbing returning users. */
+  .welcome-banner {
+    margin-bottom: 16px;
+    padding: 14px 18px;
+    background: var(--ink);
+    color: var(--card);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--br);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+    animation: wbFadeIn .35s ease-out;
+  }
+  .welcome-banner[hidden] { display: none; }
+  @keyframes wbFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .wb-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    line-height: 1.4;
+    margin-top: 1px;
+    color: var(--accent);
+    transition: color .5s;
+  }
+  .wb-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    line-height: 1.5;
+    font-size: 13.5px;
+  }
+  .wb-text strong {
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.005em;
+  }
+  .wb-text .jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11.5px;
+    color: color-mix(in srgb, var(--card) 70%, transparent);
+    margin-top: 2px;
+    line-height: 1.6;
+  }
+  .wb-close {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid color-mix(in srgb, var(--card) 30%, transparent);
+    background: transparent;
+    color: var(--card);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    transition: all .15s;
+  }
+  .wb-close:hover {
+    border-color: var(--card);
+    background: color-mix(in srgb, var(--card) 12%, transparent);
+  }
+
+  @media (max-width: 480px) {
+    .welcome-banner { padding: 12px 14px; gap: 10px; }
+    .wb-text { font-size: 12.5px; }
+    .wb-text strong { font-size: 13px; }
+    .wb-text .jp { font-size: 10.5px; }
+    .wb-close { width: 24px; height: 24px; font-size: 16px; }
   }
 
   .colophon {
@@ -1284,8 +1584,80 @@
     color: var(--mute);
     font-weight: 600;
     line-height: 1.6;
+    align-items: center;
   }
   .colophon strong { color: var(--ink); font-weight: 800; letter-spacing: 0.12em; margin-right: 6px; }
+  .colophon-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  /* ─── SHARE BUTTONS in colophon ──────────
+     Editorial-style placement: small icons next to the meta block.
+     Hover transitions to ink color for tactile feel. */
+  .colophon-share {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .share-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: var(--mute);
+    margin-right: 4px;
+  }
+  .share-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--rule);
+    background: var(--card);
+    color: var(--mute);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .15s;
+    text-decoration: none;
+    padding: 0;
+  }
+  .share-btn:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+    transform: translate(-1px, -1px);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .share-toast {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    background: var(--ink);
+    color: var(--card);
+    padding: 6px 11px;
+    border-radius: 100px;
+    position: absolute;
+    right: 0;
+    top: -36px;
+    pointer-events: none;
+    animation: toastIn .25s ease-out;
+  }
+  .share-toast[hidden] { display: none; }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .colophon { grid-template-columns: 1fr; text-align: left; }
+    .colophon-share { padding-top: 12px; border-top: 1px solid var(--rule); }
+  }
 
   /* ─── VISITOR STATS ──────────────────────── */
   .visitors {
@@ -1817,6 +2189,17 @@
 <body data-status="DISRUPTED">
   <div class="container">
 
+    <!-- WELCOME BANNER — shown to visitors arriving via shared links (?ref= param) -->
+    <div class="welcome-banner" id="welcomeBanner" hidden>
+      <span class="wb-icon">ⓘ</span>
+      <div class="wb-text">
+        <strong>A live editorial monitor for the Strait of Hormuz</strong>
+        <span>— the maritime chokepoint carrying ~20% of global oil through a 39 km-wide passage.</span>
+        <span class="jp">世界の石油の約20%が通過する戦略的要衝・ホルムズ海峡のライブ・エディトリアル・モニター。</span>
+      </div>
+      <button class="wb-close" id="welcomeBannerClose" aria-label="Dismiss">×</button>
+    </div>
+
     <!-- TOPBAR -->
     <header class="topbar">
       <a href="/" class="brand" aria-label="HORMUZ NOW">
@@ -1832,6 +2215,9 @@
         </button>
       </div>
     </header>
+
+    <!-- CACHE NOTICE — appears when displaying cached data (24h cache) -->
+    <div class="cache-notice" id="cacheNotice" hidden></div>
 
     <!-- DEMO CTA BANNER (only visible in DEMO mode) -->
     <div class="demo-cta" id="demoCta" hidden>
@@ -1863,6 +2249,24 @@
         <div class="hero-headline">
           <p class="headline-en" id="headlineEn"><span class="skeleton" style="width: 90%;"></span></p>
           <p class="headline-jp" id="headlineJp"><span class="skeleton" style="width: 70%;"></span></p>
+        </div>
+
+        <div class="verify-strip" id="verifyStrip" hidden>
+          <div class="vs-row" id="vsPrimary">
+            <span class="vs-icon">◉</span>
+            <span class="vs-label">Primary source</span>
+            <span class="vs-value" id="vsPrimaryValue">—</span>
+          </div>
+          <div class="vs-row" id="vsAdvisory">
+            <span class="vs-icon">⌃</span>
+            <span class="vs-label">Latest advisory</span>
+            <span class="vs-value" id="vsAdvisoryValue">—</span>
+          </div>
+          <div class="vs-row" id="vsNext">
+            <span class="vs-icon">↻</span>
+            <span class="vs-label">Next expected</span>
+            <span class="vs-value" id="vsNextValue">—</span>
+          </div>
         </div>
 
         <div class="ai-notice">
@@ -2303,8 +2707,23 @@
     </details>
 
     <footer class="colophon">
-      <div><strong>SOURCES</strong> <span id="sources">—</span></div>
-      <div><strong>FETCHED</strong> · <span id="lastUpdatedFooter">—</span></div>
+      <div class="colophon-meta">
+        <div><strong>SOURCES</strong> <span id="sources">—</span></div>
+        <div><strong>FETCHED</strong> · <span id="lastUpdatedFooter">—</span></div>
+      </div>
+      <div class="colophon-share">
+        <span class="share-label">SHARE</span>
+        <a href="#" id="shareX" class="share-btn" aria-label="Share on X" title="Share on X">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="#" id="shareReddit" class="share-btn" aria-label="Share on Reddit" title="Share on Reddit">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M14.238 15.348c.085.084.085.221 0 .306-.465.462-1.194.687-2.231.687l-.008-.002-.008.002c-1.036 0-1.766-.225-2.231-.688-.085-.084-.085-.221 0-.305.084-.084.222-.084.307 0 .379.377 1.008.561 1.924.561l.008.002.008-.002c.915 0 1.544-.184 1.924-.561.085-.084.223-.084.307 0zm-3.44-2.418c0-.507-.414-.919-.922-.919-.509 0-.923.412-.923.919 0 .506.414.918.923.918.508.001.922-.411.922-.918zm13.202-.93c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-5-.129c0-.851-.695-1.543-1.55-1.543-.417 0-.795.167-1.074.435-1.056-.695-2.484-1.137-4.066-1.194l.865-2.724 2.343.549-.003.034c0 .696.569 1.262 1.268 1.262.699 0 1.267-.566 1.267-1.262s-.568-1.262-1.267-1.262c-.537 0-.994.335-1.179.804l-2.525-.592c-.11-.027-.223.037-.257.145l-.965 3.038c-1.656.02-3.155.466-4.258 1.181-.277-.255-.644-.415-1.05-.415-.854.001-1.549.693-1.549 1.544 0 .566.311 1.056.768 1.325-.03.164-.05.331-.05.502 0 2.281 2.805 4.137 6.253 4.137s6.253-1.856 6.253-4.137c0-.171-.019-.34-.05-.504.451-.27.758-.757.758-1.323zm-4.872.119c-.509 0-.923.412-.923.919 0 .506.414.918.923.918s.923-.412.923-.918c0-.507-.414-.919-.923-.919z"/></svg>
+        </a>
+        <button class="share-btn" id="shareCopy" aria-label="Copy link" title="Copy link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </button>
+        <span class="share-toast" id="shareToast" hidden>Copied!</span>
+      </div>
     </footer>
 
     <!-- ─── VISITORS ───────────────────────── -->
@@ -2423,7 +2842,10 @@
       const v = document.getElementById('apiKeyInput').value.trim();
       setApiKey(v);
       closeSettings();
-      if (v) load();
+      if (v) {
+        clearCache(); // new key, force fresh
+        load(true);
+      }
     });
 
     document.getElementById('testApiKey').addEventListener('click', async () => {
@@ -2604,43 +3026,78 @@
 
       const today = new Date().toISOString().split('T')[0];
       const prompt = 'You are gathering Strait of Hormuz shipping status. Today is ' + today + '.\n\n' +
-        'PRIORITIZE PRIMARY SOURCES in this order:\n' +
-        '1. UKMTO advisories (ukmto.org) — UK Maritime Trade Operations\n' +
-        '2. IMO official statements (imo.org)\n' +
-        '3. US Fifth Fleet / NAVCENT statements (cusnc.navy.mil)\n' +
-        '4. IRGC / Iran government official statements\n' +
-        '5. Lloyd\'s List Intelligence reports (lloydslist.com)\n' +
-        '6. Windward maritime data (insights.windward.ai)\n' +
-        '7. Reuters, AP, Bloomberg (wire services)\n' +
-        '8. Al Jazeera, CNN, NBC, NYT (general media — secondary)\n\n' +
-        'Search the most authoritative sources first. Cross-reference at least 2 sources before reporting status.\n\n' +
-        'STATUS DEFINITIONS — use these exactly:\n' +
+
+        '═══ MANDATORY VERIFICATION PROTOCOL ═══\n' +
+        'You MUST follow these steps in order:\n\n' +
+        'STEP 1 — CHECK PRIMARY OFFICIAL SOURCES FIRST\n' +
+        'Always start by searching these official sources for the latest information:\n' +
+        '  • UKMTO website (ukmto.org) — search "UKMTO advisory" + current date. Look for JMIC Advisory Notes and Updates.\n' +
+        '  • IMO Strait of Hormuz page (imo.org/en/mediacentre/hottopics/pages/middle-east-strait-of-hormuz.aspx)\n' +
+        '  • US Fifth Fleet / NAVCENT (cusnc.navy.mil)\n' +
+        'These are AUTHORITATIVE. If any of them contain current advisory information, that is your ground truth.\n\n' +
+        'STEP 2 — CROSS-REFERENCE WITH WIRE SERVICES\n' +
+        'After establishing the primary source picture, validate with:\n' +
+        '  • Reuters, AP, Bloomberg (wire services)\n' +
+        '  • Lloyd\'s List Intelligence (lloydslist.com)\n\n' +
+        'STEP 3 — USE SECONDARY MEDIA ONLY FOR CONTEXT\n' +
+        '  • Al Jazeera, CNN, NBC, NYT — only for context/color, never as sole basis for a claim\n\n' +
+
+        '═══ VERIFICATION REQUIREMENTS ═══\n' +
+        '• Every incident MUST have a real source_url that points to an actual article you read in this session.\n' +
+        '• Count the number of INDEPENDENT sources that confirm each incident.\n' +
+        '• If an incident is reported by only one secondary media source and no wire/primary source, flag it as low confidence or omit it.\n' +
+        '• NEVER fabricate URLs. If unsure, omit the incident.\n\n' +
+
+        '═══ STATUS DEFINITIONS ═══\n' +
         '- "OPEN": Commercial shipping flowing at >70% of normal volumes, no active threat advisories beyond routine.\n' +
         '- "DISRUPTED": Commercial shipping continuing but at reduced volumes (10-70% of normal), OR active threat advisories issued by UKMTO/Navy, OR recent (within 14 days) attacks on vessels, OR transit conditions impose extra requirements (e.g., escort, declarations, route changes).\n' +
         '- "CLOSED": Effective full closure — commercial transit at <10% of normal, OR formal closure declared by Iran or coalition, OR international shipping companies have suspended transits.\n\n' +
         'Be CONSERVATIVE: when in doubt between two statuses, choose the LESS severe one. Do not upgrade to CLOSED unless you have direct evidence of suspension/closure.\n\n' +
+
+        '═══ OUTPUT FORMAT ═══\n' +
         'Respond with ONLY a JSON object — no preamble, no markdown:\n\n' +
         '{\n' +
         '  "status": "OPEN" or "DISRUPTED" or "CLOSED",\n' +
         '  "status_jp": "通行可能" or "混乱" or "封鎖",\n' +
-        '  "status_basis": "single sentence explaining which definition criteria triggered this status, citing the source",\n' +
+        '  "status_basis": "single sentence explaining which definition criteria triggered this status, citing the SPECIFIC primary source (e.g., \'UKMTO JMIC Advisory 004-26 lists threat level as CRITICAL\')",\n' +
         '  "headline_en": "single sentence, max 22 words, factual not editorial",\n' +
         '  "headline_jp": "30字程度",\n' +
-        '  "traffic_pct": <integer 0-100, only if you can cite a specific source for this number; otherwise null>,\n' +
+        '  "traffic_pct": <integer 0-100, only if you can cite a specific source; otherwise null>,\n' +
         '  "traffic_pct_source": "domain.com or null",\n' +
         '  "advisory_level": "LOW" or "ELEVATED" or "HIGH" or "CRITICAL",\n' +
         '  "advisory_source": "UKMTO" or "JMIC" or "OTHER" or null,\n' +
-        '  "confidence": "HIGH" if multiple primary sources agree, "MEDIUM" if mixed signals, "LOW" if mostly secondary reporting,\n' +
+        '  "primary_source_consulted": true if you successfully accessed UKMTO or IMO content this session, false otherwise,\n' +
+        '  "next_expected_update_hours": <integer estimate when UKMTO is expected to issue next advisory, typically 24-72 hours from latest one>,\n' +
+        '  "last_advisory_id": "e.g., \'JMIC 004-26\' or null if unknown",\n' +
+        '  "last_advisory_date": "YYYY-MM-DD or null",\n' +
+        '  "confidence": "HIGH" if primary sources directly confirm, "MEDIUM" if only wire-level confirmation, "LOW" if mostly secondary,\n' +
         '  "transitions": [{"date": "YYYY-MM-DD", "status": "OPEN" or "DISRUPTED" or "CLOSED"}],\n' +
-        '  "incidents": [{"date": "YYYY-MM-DD", "type": "attack" or "escalation" or "diplomatic" or "deescalation" or "shipping" or "military" or "policy", "actor": "trump" or "khamenei" or "netanyahu" or "mbs" or "pezeshkian" or null, "summary_en": "max 14 words", "summary_jp": "簡潔に", "source_url": "full https URL of the article", "source_domain": "domain.com", "tier": 1 if from PRIMARY sources 1-6 above, 2 if wire service (7), 3 if secondary media (8)}],\n' +
+        '  "incidents": [{\n' +
+        '    "date": "YYYY-MM-DD",\n' +
+        '    "type": "attack" | "escalation" | "diplomatic" | "deescalation" | "shipping" | "military" | "policy",\n' +
+        '    "actor": "trump"|"khamenei"|"netanyahu"|"mbs"|"pezeshkian"|null,\n' +
+        '    "summary_en": "max 14 words",\n' +
+        '    "summary_jp": "簡潔に",\n' +
+        '    "source_url": "full https URL",\n' +
+        '    "source_domain": "domain.com",\n' +
+        '    "tier": 1 | 2 | 3,\n' +
+        '    "source_count": <number of independent sources that reported this incident — be honest, do not inflate>,\n' +
+        '    "verification": "PRIMARY_CONFIRMED" if UKMTO/IMO/Navy/IRGC explicitly reports it | "WIRE_CONFIRMED" if 2+ wire services agree | "SINGLE_SOURCE" if only one source\n' +
+        '  }],\n' +
         '  "sources": [{"name": "Source Name", "url": "https://...", "tier": 1 or 2 or 3, "accessed": "' + today + '"}]\n' +
         '}\n\n' +
+        '═══ INCIDENT REQUIREMENTS ═══\n' +
         'transitions: cover 6 months, 3-8 entries, oldest >=180 days ago.\n' +
-        'incidents: 6-10 newest first. Always include source_url with the actual article URL.\n' +
-        'incident type "policy": use for executive orders, sanctions, declarations, and similar government policy actions.\n' +
-        'incident "actor" field: set to one of "trump"/"khamenei"/"netanyahu"/"mbs"/"pezeshkian" ONLY if that specific person is the primary actor of the action (e.g., "Trump signed executive order", "Khamenei issued statement"). Set to null otherwise (e.g., for institutional or general events).\n' +
-        'sources: 3-6 sources actually used. Tier 1 = primary (UKMTO/IMO/Navy/IRGC/Lloyds/Windward). Tier 2 = wire (Reuters/AP/Bloomberg). Tier 3 = secondary (CNN/AlJazeera/NYT/NBC).\n' +
-        'If primary sources are unavailable or contradict secondary reporting, set confidence to MEDIUM or LOW and note in headline.';
+        'incidents: Return 8-12 events, NEWEST FIRST (sorted by date descending).\n' +
+        '  RECENCY: At least 60% MUST be from the last 7 days. Remaining can go back 30 days for context.\n' +
+        '  Search aggressively for events from today, yesterday, past 3 days.\n' +
+        '  Always include real source_url.\n' +
+        '  Same-date events: list as SEPARATE entries (they will be grouped on display).\n' +
+        '  PRIORITIZE incidents confirmed by primary or wire sources. Avoid SINGLE_SOURCE incidents from secondary media unless they are the only signal for an important event.\n' +
+        'incident type "policy": use for executive orders, sanctions, declarations, government policy actions.\n' +
+        'incident "actor": set to specific person ONLY if they are the primary actor; otherwise null.\n' +
+        'sources: 3-6 sources actually used. Tier 1 = primary, Tier 2 = wire, Tier 3 = secondary.\n' +
+        'If primary sources unavailable, set confidence to MEDIUM or LOW. Be honest about uncertainty.';
 
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -2652,10 +3109,21 @@
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
-          max_tokens: 4000,
+          max_tokens: 8000,
           temperature: 0,
           messages: [{ role: 'user', content: prompt }],
-          tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+          tools: [{
+            type: 'web_search_20250305',
+            name: 'web_search',
+            max_uses: 8,
+            allowed_domains: [
+              'ukmto.org', 'imo.org', 'cusnc.navy.mil',
+              'lloydslist.com', 'insights.windward.ai',
+              'reuters.com', 'apnews.com', 'bloomberg.com',
+              'aljazeera.com', 'cnn.com', 'nbcnews.com', 'nytimes.com',
+              'ft.com', 'wsj.com'
+            ]
+          }]
         })
       });
 
@@ -2813,6 +3281,14 @@
       currentData = d;
       document.body.setAttribute('data-status', d.status);
 
+      // Dynamically update OGP image to match current status (for any future shares from this rendered state)
+      const ogpStatus = (d.status || 'DISRUPTED').toLowerCase();
+      const ogpUrl = 'https://strait-monitor.github.io/ogp-' + ogpStatus + '.png';
+      const ogMeta = document.querySelector('meta[property="og:image"]');
+      const twMeta = document.querySelector('meta[name="twitter:image"]');
+      if (ogMeta) ogMeta.setAttribute('content', ogpUrl);
+      if (twMeta) twMeta.setAttribute('content', ogpUrl);
+
       const setText = (id, txt) => {
         const el = document.getElementById(id);
         if (el) { el.textContent = txt; el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in'); }
@@ -2863,47 +3339,155 @@
         confEl.hidden = true;
       }
 
+      // Verification strip in hero — primary source consulted? advisory ref? next expected update?
+      const vStrip = document.getElementById('verifyStrip');
+      const vPrim = document.getElementById('vsPrimary');
+      const vPrimVal = document.getElementById('vsPrimaryValue');
+      const vAdvVal = document.getElementById('vsAdvisoryValue');
+      const vNextVal = document.getElementById('vsNextValue');
+      if (vStrip) {
+        const primConsulted = d.primary_source_consulted === true;
+        if (vPrim) vPrim.className = 'vs-row ' + (primConsulted ? 'confirmed' : 'unconfirmed');
+        if (vPrimVal) {
+          vPrimVal.textContent = primConsulted ? 'UKMTO / IMO confirmed' : 'Wire only';
+        }
+        if (vAdvVal) {
+          if (d.last_advisory_id) {
+            const advDate = d.last_advisory_date ? ' · ' + fmtDate(d.last_advisory_date) : '';
+            vAdvVal.textContent = d.last_advisory_id + advDate;
+          } else {
+            vAdvVal.textContent = '—';
+          }
+        }
+        if (vNextVal) {
+          const hrs = parseInt(d.next_expected_update_hours, 10);
+          if (hrs && hrs > 0) {
+            if (hrs < 24) {
+              vNextVal.textContent = '~' + hrs + 'h';
+            } else {
+              const days = Math.round(hrs / 24 * 10) / 10;
+              vNextVal.textContent = '~' + days + 'd';
+            }
+          } else {
+            vNextVal.textContent = '—';
+          }
+        }
+        vStrip.hidden = false;
+      }
+
       const list = document.getElementById('incidentList');
       list.innerHTML = '';
-      (d.incidents || []).forEach((inc, i) => {
-        const t = inc.type || 'default';
-        // Actor icon takes priority over type icon when an actor is identified
-        const actorIcon = getActorIcon(inc.actor);
+
+      // Group incidents by date to consolidate same-day events
+      const incidents = (d.incidents || []).slice();
+      // Ensure newest first, just in case API returns out of order
+      incidents.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+      const groupedByDate = {};
+      const dateOrder = [];
+      incidents.forEach(inc => {
+        const date = inc.date || 'undated';
+        if (!groupedByDate[date]) {
+          groupedByDate[date] = [];
+          dateOrder.push(date);
+        }
+        groupedByDate[date].push(inc);
+      });
+
+      dateOrder.forEach((date, i) => {
+        const events = groupedByDate[date];
+        const dRel = daysSince(date);
+        const relText = dRel === 0 ? 'today' : (dRel === 1 ? '1 day ago' : (dRel + ' days ago'));
+
+        // For grouped cards: pick the first event's icon to represent the day,
+        // but visually indicate there are more.
+        const primary = events[0];
+        const t = primary.type || 'default';
+        const actorIcon = getActorIcon(primary.actor);
         const iconSvg = actorIcon || icons[t] || icons.default;
         const isActorIcon = !!actorIcon;
-        const dRel = daysSince(inc.date);
-        const relText = dRel === 0 ? 'today' : (dRel === 1 ? '1 day ago' : (dRel + ' days ago'));
-        const tier = inc.tier || 3;
-        const sourceUrl = inc.source_url || '';
-        const sourceDomain = inc.source_domain || '';
-
-        const tierLabel = tier === 1 ? 'PRIMARY' : (tier === 2 ? 'WIRE' : 'MEDIA');
-        let sourceLink = '';
-        if (sourceUrl) {
-          sourceLink = '<a href="' + escapeHtml(sourceUrl) + '" target="_blank" rel="noopener" class="incident-source">' +
-            '<span class="tier-dot tier-' + tier + '"></span>' +
-            '<span class="tier-label">' + tierLabel + '</span>' +
-            '<span class="source-domain">' + escapeHtml(sourceDomain) + '</span>' +
-            '<span class="source-arrow">↗</span>' +
-            '</a>';
-        }
+        const iconClass = isActorIcon ? 'incident-icon actor-icon' : 'incident-icon t-' + t;
 
         const div = document.createElement('div');
         div.className = 'incident fade-in';
+        if (events.length > 1) div.classList.add('incident-grouped');
         div.style.animationDelay = (i * 50) + 'ms';
 
-        // Actor icons get a different visual treatment — neutral background, ink stroke
-        const iconClass = isActorIcon ? 'incident-icon actor-icon' : 'incident-icon t-' + t;
+        // Build event list HTML — each event has its own type tag, summaries, source
+        let eventsHtml = '';
+        events.forEach((inc, idx) => {
+          const eT = inc.type || 'default';
+          const tier = inc.tier || 3;
+          const sourceUrl = inc.source_url || '';
+          const sourceDomain = inc.source_domain || '';
+          const tierLabel = tier === 1 ? 'PRIMARY' : (tier === 2 ? 'WIRE' : 'MEDIA');
+
+          let sourceLink = '';
+          if (sourceUrl) {
+            sourceLink = '<a href="' + escapeHtml(sourceUrl) + '" target="_blank" rel="noopener" class="incident-source">' +
+              '<span class="tier-dot tier-' + tier + '"></span>' +
+              '<span class="tier-label">' + tierLabel + '</span>' +
+              '<span class="source-domain">' + escapeHtml(sourceDomain) + '</span>' +
+              '<span class="source-arrow">↗</span>' +
+              '</a>';
+          }
+
+          // Verification badge — shows how many sources confirmed this and at what level
+          let verifyBadge = '';
+          const verification = inc.verification || null;
+          const sourceCount = inc.source_count || null;
+          if (verification || sourceCount) {
+            let vClass = 'verify-single';
+            let vIcon = '◔';
+            let vLabel = 'Single source';
+            if (verification === 'PRIMARY_CONFIRMED') {
+              vClass = 'verify-primary';
+              vIcon = '✓';
+              vLabel = 'Primary-confirmed';
+            } else if (verification === 'WIRE_CONFIRMED') {
+              vClass = 'verify-wire';
+              vIcon = '✓';
+              vLabel = 'Wire-confirmed';
+            }
+            const countText = sourceCount && sourceCount > 1 ? ' · ' + sourceCount + ' sources' : '';
+            verifyBadge = '<span class="verify-badge ' + vClass + '" title="' + vLabel + countText + '">' +
+              '<span class="verify-icon">' + vIcon + '</span>' +
+              '<span class="verify-label">' + vLabel + countText + '</span>' +
+              '</span>';
+          }
+
+          // Per-event mini icon for grouped cards (shows variety of types within the day)
+          const eActorIcon = getActorIcon(inc.actor);
+          const eIconSvg = eActorIcon || icons[eT] || icons.default;
+          const eIsActor = !!eActorIcon;
+          const eIconClass = eIsActor ? 'event-mini-icon actor-icon' : 'event-mini-icon t-' + eT;
+
+          const showMiniIcon = events.length > 1; // only show mini-icon when grouped
+          eventsHtml +=
+            '<div class="event-item">' +
+              (showMiniIcon ? '<div class="' + eIconClass + '">' + eIconSvg + '</div>' : '') +
+              '<div class="event-body">' +
+                '<div class="event-tag-row">' +
+                  '<span class="type-tag">' + eT + '</span>' +
+                  verifyBadge +
+                '</div>' +
+                '<div class="incident-text-en">' + escapeHtml(inc.summary_en || '') + '</div>' +
+                '<div class="incident-text-jp">' + escapeHtml(inc.summary_jp || '') + '</div>' +
+                sourceLink +
+              '</div>' +
+            '</div>';
+        });
+
+        const dateLabel = '<div class="incident-date">' + fmtDate(date)
+          + '<span class="relative">' + relText + '</span>'
+          + (events.length > 1 ? '<span class="event-count">' + events.length + ' events</span>' : '')
+          + '</div>';
 
         div.innerHTML =
-          '<div class="incident-date">' + fmtDate(inc.date) + '<span class="relative">' + relText + '</span></div>' +
+          dateLabel +
           '<div class="' + iconClass + '">' + iconSvg + '</div>' +
-          '<div class="incident-content">' +
-            '<span class="type-tag">' + t + '</span>' +
-            '<div class="incident-text-en">' + escapeHtml(inc.summary_en) + '</div>' +
-            '<div class="incident-text-jp">' + escapeHtml(inc.summary_jp) + '</div>' +
-            sourceLink +
-          '</div>';
+          '<div class="incident-content">' + eventsHtml + '</div>';
+
         list.appendChild(div);
       });
 
@@ -2944,12 +3528,17 @@
     const DEMO_DATA = {
       status: 'DISRUPTED',
       status_jp: '混乱',
+      status_basis: 'UKMTO JMIC Advisory 004-26 lists Strait of Hormuz threat level as CRITICAL with active mine and GNSS interference reports.',
       headline_en: 'IRGC enforces selective passage; commercial transit at ~5% of normal volumes.',
       headline_jp: 'IRGCが通航を選別実施、商業通航量は通常の約5%まで低下。',
       traffic_pct: 5,
       traffic_pct_source: 'lloydslist.com',
       advisory_level: 'CRITICAL',
       advisory_source: 'UKMTO',
+      primary_source_consulted: true,
+      next_expected_update_hours: 18,
+      last_advisory_id: 'JMIC 004-26',
+      last_advisory_date: '2026-05-04',
       confidence: 'HIGH',
       transitions: [
         { date: '2025-11-15', status: 'OPEN' },
@@ -2957,14 +3546,15 @@
         { date: '2026-04-13', status: 'DISRUPTED' }
       ],
       incidents: [
-        { date: '2026-05-08', type: 'policy', actor: 'trump', summary_en: 'Trump signs executive order tightening sanctions on Iranian oil.', summary_jp: 'トランプ大統領、イラン石油への制裁強化大統領令に署名', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
-        { date: '2026-05-07', type: 'attack', actor: null, summary_en: 'Tanker struck by drone near Strait, two crew injured.', summary_jp: '海峡近くでタンカーがドローン攻撃を受け2名負傷', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
-        { date: '2026-05-06', type: 'escalation', actor: 'khamenei', summary_en: 'Khamenei reissues warning against unauthorized strait transit.', summary_jp: 'ハーメネイ師、未承認通航への警告を再発出', source_url: 'https://www.aljazeera.com', source_domain: 'aljazeera.com', tier: 3 },
-        { date: '2026-05-04', type: 'diplomatic', actor: 'mbs', summary_en: 'Saudi crown prince proposes Gulf-wide maritime safety summit.', summary_jp: 'サウジ皇太子、湾岸海上安全サミットを提案', source_url: 'https://www.bloomberg.com', source_domain: 'bloomberg.com', tier: 2 },
-        { date: '2026-05-01', type: 'military', actor: 'netanyahu', summary_en: 'Netanyahu authorizes naval deployment to Red Sea support mission.', summary_jp: 'ネタニヤフ首相、紅海支援任務への海軍派遣を承認', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2 },
-        { date: '2026-04-28', type: 'attack', actor: null, summary_en: 'Mine struck by Greek-flagged LNG carrier near Larak.', summary_jp: 'ラーラク島近くでギリシャ船籍LNG船が機雷に接触', source_url: 'https://www.lloydslist.com', source_domain: 'lloydslist.com', tier: 1 },
-        { date: '2026-04-25', type: 'diplomatic', actor: 'pezeshkian', summary_en: 'Pezeshkian opens back-channel talks with Omani mediators.', summary_jp: 'ペゼシュキアン大統領、オマーン仲介者との水面下協議開始', source_url: 'https://www.aljazeera.com', source_domain: 'aljazeera.com', tier: 3 },
-        { date: '2026-04-20', type: 'military', actor: null, summary_en: 'US Fifth Fleet pauses convoy escorts citing elevated risk.', summary_jp: '米第5艦隊、リスク上昇を理由に護衛任務一時停止', source_url: 'https://www.cusnc.navy.mil', source_domain: 'cusnc.navy.mil', tier: 1 }
+        { date: '2026-05-10', type: 'policy', actor: 'trump', summary_en: 'Trump signs executive order tightening sanctions on Iranian oil exports.', summary_jp: 'トランプ大統領、イラン石油輸出への制裁強化大統領令に署名', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2, source_count: 4, verification: 'WIRE_CONFIRMED' },
+        { date: '2026-05-10', type: 'escalation', actor: 'khamenei', summary_en: 'Khamenei calls Trump sanctions "act of economic war".', summary_jp: 'ハーメネイ師、トランプ制裁を「経済戦争行為」と非難', source_url: 'https://www.aljazeera.com', source_domain: 'aljazeera.com', tier: 3, source_count: 2, verification: 'WIRE_CONFIRMED' },
+        { date: '2026-05-10', type: 'shipping', actor: null, summary_en: 'Three VLCCs reroute to Cape of Good Hope after sanctions news.', summary_jp: '制裁発表後、超大型タンカー3隻が喜望峰経由に変更', source_url: 'https://www.lloydslist.com', source_domain: 'lloydslist.com', tier: 1, source_count: 3, verification: 'PRIMARY_CONFIRMED' },
+        { date: '2026-05-09', type: 'attack', actor: null, summary_en: 'Tanker struck by drone near Strait, two crew injured.', summary_jp: '海峡近くでタンカーがドローン攻撃を受け2名負傷', source_url: 'https://www.ukmto.org', source_domain: 'ukmto.org', tier: 1, source_count: 5, verification: 'PRIMARY_CONFIRMED' },
+        { date: '2026-05-09', type: 'military', actor: null, summary_en: 'US Fifth Fleet announces additional patrols in response.', summary_jp: '米第5艦隊、対応として追加哨戒を発表', source_url: 'https://www.cusnc.navy.mil', source_domain: 'cusnc.navy.mil', tier: 1, source_count: 3, verification: 'PRIMARY_CONFIRMED' },
+        { date: '2026-05-08', type: 'diplomatic', actor: 'mbs', summary_en: 'Saudi crown prince proposes Gulf-wide maritime safety summit.', summary_jp: 'サウジ皇太子、湾岸海上安全サミットを提案', source_url: 'https://www.bloomberg.com', source_domain: 'bloomberg.com', tier: 2, source_count: 2, verification: 'WIRE_CONFIRMED' },
+        { date: '2026-05-06', type: 'military', actor: 'netanyahu', summary_en: 'Netanyahu authorizes naval deployment to Red Sea support mission.', summary_jp: 'ネタニヤフ首相、紅海支援任務への海軍派遣を承認', source_url: 'https://www.reuters.com', source_domain: 'reuters.com', tier: 2, source_count: 3, verification: 'WIRE_CONFIRMED' },
+        { date: '2026-05-05', type: 'diplomatic', actor: 'pezeshkian', summary_en: 'Pezeshkian opens back-channel talks with Omani mediators.', summary_jp: 'ペゼシュキアン大統領、オマーン仲介者との水面下協議開始', source_url: 'https://www.aljazeera.com', source_domain: 'aljazeera.com', tier: 3, source_count: 1, verification: 'SINGLE_SOURCE' },
+        { date: '2026-05-03', type: 'attack', actor: null, summary_en: 'Mine struck by Greek-flagged LNG carrier near Larak.', summary_jp: 'ラーラク島近くでギリシャ船籍LNG船が機雷に接触', source_url: 'https://www.lloydslist.com', source_domain: 'lloydslist.com', tier: 1, source_count: 4, verification: 'PRIMARY_CONFIRMED' }
       ],
       sources: [
         { name: 'UKMTO Advisory', url: 'https://www.ukmto.org', tier: 1 },
@@ -3027,7 +3617,66 @@
         '</div>';
     }
 
-    async function load() {
+    /* ─── CACHE (24h) ─────────────────────────
+     * Reduces API costs: data is fetched at most once per 24h on auto-load.
+     * REFRESH button bypasses cache and fetches immediately.
+     */
+    const CACHE_KEY = 'hormuz_now_cache_v1';
+    const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+    function readCache() {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const obj = JSON.parse(raw);
+        if (!obj || !obj.fetchedAt || !obj.data) return null;
+        const age = Date.now() - obj.fetchedAt;
+        if (age >= CACHE_TTL_MS) return null;
+        return obj;
+      } catch (e) { return null; }
+    }
+    function writeCache(data) {
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          fetchedAt: Date.now(),
+          data: data
+        }));
+      } catch (e) { /* quota exceeded; ignore */ }
+    }
+    function clearCache() {
+      try { localStorage.removeItem(CACHE_KEY); } catch (e) {}
+    }
+
+    // Format relative time for cache age display
+    function fmtCacheAge(ms) {
+      const mins = Math.round(ms / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + ' min ago';
+      const hrs = Math.round(mins / 60);
+      if (hrs === 1) return '1 hour ago';
+      return hrs + ' hours ago';
+    }
+
+    function updateCacheNotice(cacheObj) {
+      const el = document.getElementById('cacheNotice');
+      if (!el) return;
+      if (!cacheObj) {
+        el.hidden = true;
+        return;
+      }
+      const age = Date.now() - cacheObj.fetchedAt;
+      const ageStr = fmtCacheAge(age);
+      el.hidden = false;
+      el.innerHTML = '<span class="cache-dot"></span>'
+        + '<span class="cache-text">Cached · last fetched ' + ageStr + '</span>'
+        + '<span class="cache-jp">' + ageStr.replace('just now', '取得直後').replace(/(\d+) min ago/, '$1分前').replace(/(\d+) hours? ago/, '$1時間前').replace(/(\d+) hour ago/, '1時間前') + 'のキャッシュ表示中</span>';
+    }
+
+    /**
+     * Main load function.
+     * @param {boolean} forceFresh - If true (REFRESH button), skip cache and fetch.
+     */
+    async function load(forceFresh) {
       const btn = document.getElementById('refresh');
       btn.disabled = true;
       const original = btn.textContent;
@@ -3037,10 +3686,21 @@
           // No API key — show demo data
           setMode(true);
           render(DEMO_DATA);
+          updateCacheNotice(null);
         } else {
-          const data = await fetchStatus();
-          setMode(false);
-          render(data);
+          // Check cache (unless forced fresh by REFRESH button)
+          const cached = forceFresh ? null : readCache();
+          if (cached) {
+            setMode(false);
+            render(cached.data);
+            updateCacheNotice(cached);
+          } else {
+            const data = await fetchStatus();
+            writeCache(data);
+            setMode(false);
+            render(data);
+            updateCacheNotice(readCache());
+          }
         }
       } catch (e) {
         showError(e);
@@ -3050,7 +3710,8 @@
       }
     }
 
-    document.getElementById('refresh').addEventListener('click', load);
+    // REFRESH button forces fresh fetch (bypasses cache)
+    document.getElementById('refresh').addEventListener('click', () => load(true));
 
     /* ─── ICON LEGEND POPULATION ─── */
     function populateLegend() {
@@ -3074,6 +3735,74 @@
       });
     }
     populateLegend();
+
+    /* ─── SHARE BUTTONS ───
+     * Strategic share text designed to make followers want to click.
+     * Includes specific numbers, scale, and tier-1 facts that travel well on social. */
+    (function setupShareButtons() {
+      const SITE_URL = 'https://strait-monitor.github.io/';
+      const SHARE_TEXT_X = 'The Strait of Hormuz: live editorial monitor.\n\n~20% of global oil moves through this 39 km passage. Current status, cross-referenced from UKMTO / Lloyd\'s / Reuters / IMO.';
+      const SHARE_TEXT_REDDIT = 'HORMUZ NOW. — Live editorial monitor for the Strait of Hormuz';
+
+      const shareX = document.getElementById('shareX');
+      if (shareX) {
+        shareX.href = 'https://twitter.com/intent/tweet?text=' +
+          encodeURIComponent(SHARE_TEXT_X) + '&url=' + encodeURIComponent(SITE_URL + '?ref=x');
+        shareX.target = '_blank';
+        shareX.rel = 'noopener';
+      }
+
+      const shareReddit = document.getElementById('shareReddit');
+      if (shareReddit) {
+        shareReddit.href = 'https://www.reddit.com/submit?url=' +
+          encodeURIComponent(SITE_URL + '?ref=reddit') + '&title=' + encodeURIComponent(SHARE_TEXT_REDDIT);
+        shareReddit.target = '_blank';
+        shareReddit.rel = 'noopener';
+      }
+
+      const shareCopy = document.getElementById('shareCopy');
+      const shareToast = document.getElementById('shareToast');
+      if (shareCopy && shareToast) {
+        shareCopy.addEventListener('click', async () => {
+          const url = SITE_URL + '?ref=share';
+          try {
+            await navigator.clipboard.writeText(url);
+            shareToast.hidden = false;
+            setTimeout(() => { shareToast.hidden = true; }, 2000);
+          } catch (e) {
+            // Fallback: select text manually
+            const ta = document.createElement('textarea');
+            ta.value = url;
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(ta);
+            shareToast.hidden = false;
+            setTimeout(() => { shareToast.hidden = true; }, 2000);
+          }
+        });
+      }
+    })();
+
+    /* ─── WELCOME BANNER ───
+     * Show to visitors arriving from shared links (URL has ?ref= param).
+     * Dismissible — once closed, doesn't show again for this session. */
+    (function setupWelcomeBanner() {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref');
+      const dismissed = sessionStorage.getItem('welcome_dismissed') === '1';
+      const banner = document.getElementById('welcomeBanner');
+      if (ref && !dismissed && banner) {
+        banner.hidden = false;
+        const close = document.getElementById('welcomeBannerClose');
+        if (close) {
+          close.addEventListener('click', () => {
+            banner.hidden = true;
+            try { sessionStorage.setItem('welcome_dismissed', '1'); } catch (e) {}
+          });
+        }
+      }
+    })();
 
     /* ─── CONTINENT DETECTION (from timezone) ─── */
     function getContinent() {
