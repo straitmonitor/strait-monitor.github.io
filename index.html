@@ -743,6 +743,36 @@
     text-transform: uppercase;
     transition: background-color .5s;
   }
+
+  /* ─── [C] KPI Source Attribution ─────
+     Small footnote below each KPI showing data provenance.
+     Sits under the tag, visible by default so source is always discoverable. */
+  .kpi-source {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--mute);
+    line-height: 1.3;
+  }
+  .kpi-source[hidden] { display: none; }
+  .kpi-src-icon {
+    font-size: 8px;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+  .kpi-src-text {
+    text-transform: uppercase;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .kpi-icon-corner {
     position: absolute;
     top: 16px;
@@ -1342,6 +1372,123 @@
     .legend-text strong { font-size: 12px; }
     .legend-text span { font-size: 10px; }
     .legend-group-title { font-size: 9px; margin: 12px 0 10px; }
+  }
+
+  /* ─── [D] CONTRADICTIONS PANEL ─────
+     Editorial honesty: surfaces opposing reports we found.
+     Sits between incidents and legend. Hidden if no conflicts. */
+  .contradictions {
+    margin-top: 14px;
+    padding: 18px 22px;
+    background: #fefce8;
+    border: 1.5px solid #ca8a04;
+    border-radius: var(--br);
+    border-left-width: 5px;
+  }
+  .contradictions[hidden] { display: none; }
+  .contra-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .contra-icon {
+    font-size: 18px;
+    line-height: 1;
+    color: #ca8a04;
+  }
+  .contra-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .contra-jp {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mute);
+    letter-spacing: 0.04em;
+  }
+  .contra-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .contra-item {
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .contra-item-bullet {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ca8a04;
+    margin-top: 7px;
+  }
+  .contra-item-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .contra-item-claim {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .contra-item-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--mute);
+    text-decoration: none;
+    border: 1px solid var(--rule);
+    padding: 3px 8px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    transition: all .15s;
+  }
+  .contra-item-source:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+  .contra-note {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed #ca8a04;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--mute);
+    font-style: italic;
+  }
+  .contra-note .jp {
+    display: block;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-style: normal;
+    font-size: 10.5px;
+    margin-top: 4px;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 480px) {
+    .contradictions { padding: 14px 16px; }
+    .contra-title { font-size: 14px; }
+    .contra-jp { font-size: 11px; }
+    .contra-item { padding: 10px 12px; }
+    .contra-item-claim { font-size: 12.5px; }
   }
 
   .incident-content { padding-top: 2px; }
@@ -2460,26 +2607,38 @@
 
     <!-- KPIs -->
     <div class="kpis">
-      <div class="kpi">
+      <div class="kpi" id="kpiTraffic">
         <div class="kpi-num">01</div>
         <div class="kpi-label">Traffic <span class="jp">通航量</span></div>
         <div class="kpi-value accent" id="kTraffic">—<span class="unit">%</span></div>
         <span class="kpi-tag">VS NORMAL</span>
+        <div class="kpi-source" id="kTrafficSource" hidden>
+          <span class="kpi-src-icon">◉</span>
+          <span class="kpi-src-text">—</span>
+        </div>
       </div>
-      <div class="kpi">
+      <div class="kpi" id="kpiAttacks">
         <div class="kpi-num">02</div>
         <div class="kpi-label">Attacks <span class="jp">攻撃</span></div>
         <div class="kpi-value accent" id="kAttacks">—</div>
         <span class="kpi-tag">7 DAYS</span>
         <div class="kpi-icon-corner" id="kAttacksIcon" hidden></div>
+        <div class="kpi-source" id="kAttacksSource" hidden>
+          <span class="kpi-src-icon">◉</span>
+          <span class="kpi-src-text">—</span>
+        </div>
       </div>
-      <div class="kpi">
+      <div class="kpi" id="kpiAdvisory">
         <div class="kpi-num">03</div>
         <div class="kpi-label">Advisory <span class="jp">勧告</span></div>
         <div class="kpi-value accent" id="kAdvisory" style="font-size: 26px;">—</div>
         <span class="kpi-tag">UKMTO / JMIC</span>
+        <div class="kpi-source" id="kAdvisorySource" hidden>
+          <span class="kpi-src-icon">◉</span>
+          <span class="kpi-src-text">—</span>
+        </div>
       </div>
-      <div class="kpi">
+      <div class="kpi" id="kpiLast">
         <div class="kpi-num">04</div>
         <div class="kpi-label">Last Event <span class="jp">直近</span></div>
         <div class="kpi-value" id="kLast">—<span class="unit">d</span></div>
@@ -2742,6 +2901,22 @@
         </div>
       </div>
     </div>
+
+    <!-- ─── [D] CONTRADICTIONS PANEL ───
+       Surfaces alternative views / contradicting reports as an editorial honesty marker.
+       Hidden when no contradictions are flagged. -->
+    <section class="contradictions" id="contradictionsPanel" hidden>
+      <div class="contra-header">
+        <span class="contra-icon">⚠</span>
+        <span class="contra-title">Conflicting reports</span>
+        <span class="contra-jp">矛盾する情報源</span>
+      </div>
+      <div class="contra-list" id="contradictionsList"></div>
+      <p class="contra-note">
+        Sources do not always agree. These are reports we found that contradict our main assessment.
+        <span class="jp">情報源は常に一致するとは限りません。当方の主たる判断と矛盾する報告を併記します。</span>
+      </p>
+    </section>
 
     <!-- ICON LEGEND — collapsible editorial footnote-style legend for incident icons -->
     <details class="icon-legend">
@@ -3098,10 +3273,27 @@
         throw err;
       }
 
-      const today = new Date().toISOString().split('T')[0];
-      const prompt = 'You are gathering Strait of Hormuz shipping status. Today is ' + today + '.\n\n' +
+      // ─── [A] Load prior judgments from history for continuity check ─────
+      const priorHistory = readPriorHistory();
+      let priorContext = '';
+      if (priorHistory && priorHistory.length > 0) {
+        priorContext = '\n═══ PRIOR JUDGMENT HISTORY (for continuity) ═══\n' +
+          'These were your previous status determinations. Use them as context:\n';
+        priorHistory.slice(0, 5).forEach((p) => {
+          priorContext += '  • ' + p.date + ': ' + p.status +
+            (p.confidence ? ' (' + p.confidence + ')' : '') +
+            (p.basis ? ' — ' + p.basis : '') + '\n';
+        });
+        priorContext += '\nIMPORTANT continuity rules:\n' +
+          '• If the situation has not materially changed since your last judgment, KEEP THE SAME STATUS. Do not flip back and forth based on minor news fluctuations.\n' +
+          '• Only change status when there is concrete evidence of a real shift (e.g., new advisory, new attack, new diplomatic action).\n' +
+          '• If you do change status, the "status_basis" must explicitly cite what triggered the change.\n\n';
+      }
 
-        '═══ MANDATORY VERIFICATION PROTOCOL ═══\n' +
+      const today = new Date().toISOString().split('T')[0];
+      const prompt = 'You are gathering Strait of Hormuz shipping status. Today is ' + today + '.\n' +
+        priorContext +
+        '\n═══ MANDATORY VERIFICATION PROTOCOL ═══\n' +
         'You MUST follow these steps in order:\n\n' +
         'STEP 1 — CHECK PRIMARY OFFICIAL SOURCES FIRST\n' +
         'Always start by searching these official sources for the latest information:\n' +
@@ -3134,17 +3326,25 @@
         '  "status": "OPEN" or "DISRUPTED" or "CLOSED",\n' +
         '  "status_jp": "通行可能" or "混乱" or "封鎖",\n' +
         '  "status_basis": "single sentence explaining which definition criteria triggered this status, citing the SPECIFIC primary source (e.g., \'UKMTO JMIC Advisory 004-26 lists threat level as CRITICAL\')",\n' +
+        '  "status_change_from_prior": "no_change" | "escalated" | "de-escalated" | "first_assessment" — comparison to prior history,\n' +
         '  "headline_en": "single sentence, max 22 words, factual not editorial",\n' +
         '  "headline_jp": "30字程度",\n' +
         '  "traffic_pct": <integer 0-100, only if you can cite a specific source; otherwise null>,\n' +
         '  "traffic_pct_source": "domain.com or null",\n' +
+        '  "traffic_pct_date": "YYYY-MM-DD when this figure was reported, or null",\n' +
         '  "advisory_level": "LOW" or "ELEVATED" or "HIGH" or "CRITICAL",\n' +
         '  "advisory_source": "UKMTO" or "JMIC" or "OTHER" or null,\n' +
+        '  "advisory_date": "YYYY-MM-DD or null",\n' +
+        '  "attacks_7d": <integer count of attacks in last 7 days, with source>,\n' +
+        '  "attacks_7d_source": "domain.com or null",\n' +
         '  "primary_source_consulted": true if you successfully accessed UKMTO or IMO content this session, false otherwise,\n' +
         '  "next_expected_update_hours": <integer estimate when UKMTO is expected to issue next advisory, typically 24-72 hours from latest one>,\n' +
         '  "last_advisory_id": "e.g., \'JMIC 004-26\' or null if unknown",\n' +
         '  "last_advisory_date": "YYYY-MM-DD or null",\n' +
         '  "confidence": "HIGH" if primary sources directly confirm, "MEDIUM" if only wire-level confirmation, "LOW" if mostly secondary,\n' +
+        '  "contradictions": [\n' +
+        '    {"claim": "what alternative view exists", "source_url": "https://...", "source_domain": "domain.com"}\n' +
+        '  ],\n' +
         '  "transitions": [{"date": "YYYY-MM-DD", "status": "OPEN" or "DISRUPTED" or "CLOSED"}],\n' +
         '  "incidents": [{\n' +
         '    "date": "YYYY-MM-DD",\n' +
@@ -3160,6 +3360,12 @@
         '  }],\n' +
         '  "sources": [{"name": "Source Name", "url": "https://...", "tier": 1 or 2 or 3, "accessed": "' + today + '"}]\n' +
         '}\n\n' +
+        '═══ CONTRADICTIONS FIELD ═══\n' +
+        'List any reports that CONTRADICT your main status determination. For example:\n' +
+        '  • Some source says "transit is normal" while others say "blocked"\n' +
+        '  • Wire services disagree on traffic volume figures\n' +
+        '  • Different actors claim different things about the situation\n' +
+        'Include 0-3 contradictions if they exist. Empty array [] if all sources agree. This is critical for editorial honesty.\n\n' +
         '═══ INCIDENT REQUIREMENTS ═══\n' +
         'transitions: cover 6 months, 3-8 entries, oldest >=180 days ago.\n' +
         'incidents: Return 8-12 events, NEWEST FIRST (sorted by date descending).\n' +
@@ -3204,9 +3410,115 @@
       const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
       const m = cleaned.match(/\{[\s\S]*\}/);
       if (!m) throw new Error('No JSON in model response');
-      const parsed = JSON.parse(m[0]);
-      // Strip <cite>, , and similar markup that web_search injects
-      return cleanResponse(parsed);
+      const firstPass = cleanResponse(JSON.parse(m[0]));
+
+      // ─── [B] Two-Pass Verification ─────
+      // Send first pass to Claude again with critical reviewer prompt.
+      // Reviewer can override status/confidence and flag inconsistencies.
+      const reviewed = await reviewerPass(apiKey, firstPass);
+
+      // Save this judgment to history for future continuity (only if it survived review)
+      saveToHistory({
+        date: today,
+        status: reviewed.status,
+        confidence: reviewed.confidence,
+        basis: reviewed.status_basis
+      });
+
+      return reviewed;
+    }
+
+    // ─── [A] Prior history management ─────
+    const HISTORY_KEY = 'hormuz_judgment_history_v1';
+    const HISTORY_MAX = 10;
+
+    function readPriorHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        if (!raw) return [];
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+      } catch (e) { return []; }
+    }
+
+    function saveToHistory(entry) {
+      try {
+        const history = readPriorHistory();
+        // Don't duplicate same-day entries — replace
+        const filtered = history.filter(h => h.date !== entry.date);
+        filtered.unshift(entry);
+        const trimmed = filtered.slice(0, HISTORY_MAX);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
+      } catch (e) { /* quota or json error — ignore */ }
+    }
+
+    // ─── [B] Reviewer Pass ─────
+    // Sends first-pass result back to Claude for critical review.
+    // Reviewer can: confirm, downgrade confidence, flag contradictions, or override status.
+    async function reviewerPass(apiKey, firstPass) {
+      const reviewPrompt = 'You are reviewing another analyst\'s assessment of the Strait of Hormuz shipping status. Be critical and look for problems.\n\n' +
+        '═══ FIRST-PASS ASSESSMENT ═══\n' +
+        JSON.stringify(firstPass, null, 2) + '\n\n' +
+        '═══ YOUR REVIEW TASK ═══\n' +
+        'Critically evaluate this assessment. Check for:\n' +
+        '1. Does the status_basis genuinely support the chosen status, or is it weak?\n' +
+        '2. Are the source URLs real and authoritative? Be skeptical of any incident with only ONE secondary-tier source.\n' +
+        '3. Are there contradictions in the incidents that should be flagged?\n' +
+        '4. Is the confidence level appropriately calibrated? (Should it be lower?)\n' +
+        '5. Are there obvious omissions — major events in the past 7 days that should be there?\n\n' +
+        'If you do a web_search and find evidence that the first-pass MISSED or got WRONG, adjust accordingly.\n\n' +
+        'Respond with ONLY a JSON object. Return the SAME structure as the input, with these possible modifications:\n' +
+        '• Lower the confidence if you found weaknesses\n' +
+        '• Remove or weaken any incident that does not hold up under scrutiny\n' +
+        '• Add to "contradictions" array any disputes you found\n' +
+        '• Add a new field "review_notes": "<one-sentence summary of what you changed and why, or \'No material issues found\' if all is well>"\n' +
+        '• Keep all other fields as-is unless you have specific evidence to change them\n\n' +
+        'Be conservative: do not invent things. If you cannot verify something with a web search, leave it as the first pass had it.';
+
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 8000,
+            temperature: 0,
+            messages: [{ role: 'user', content: reviewPrompt }],
+            tools: [{
+              type: 'web_search_20250305',
+              name: 'web_search',
+              max_uses: 4
+            }]
+          })
+        });
+
+        if (!response.ok) {
+          // If reviewer fails, return the first pass and add a note
+          console.warn('[Hormuz] Reviewer pass failed, returning first-pass result');
+          firstPass.review_notes = 'Reviewer pass unavailable. Single-pass result.';
+          return firstPass;
+        }
+
+        const data = await response.json();
+        const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+        const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const m = cleaned.match(/\{[\s\S]*\}/);
+        if (!m) {
+          firstPass.review_notes = 'Reviewer returned no JSON. Single-pass result.';
+          return firstPass;
+        }
+        const reviewed = cleanResponse(JSON.parse(m[0]));
+        return reviewed;
+      } catch (e) {
+        console.warn('[Hormuz] Reviewer pass error:', e);
+        firstPass.review_notes = 'Reviewer pass errored. Single-pass result.';
+        return firstPass;
+      }
     }
 
     // Recursively strip citation markup from all string fields in an object/array
@@ -3396,6 +3708,42 @@
         document.getElementById('kLastTag').textContent = lastDays === 0 ? 'TODAY' : (lastDays === 1 ? 'DAY AGO' : 'DAYS AGO');
       }
 
+      // ─── [C] KPI Source Attribution ─────
+      // Display each metric's source and date right under the value
+      function updateKpiSource(elementId, sourceText) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        const textEl = el.querySelector('.kpi-src-text');
+        if (sourceText && textEl) {
+          textEl.textContent = sourceText;
+          el.hidden = false;
+        } else {
+          el.hidden = true;
+        }
+      }
+      // Traffic source
+      if (d.traffic_pct != null && d.traffic_pct_source) {
+        const dateStr = d.traffic_pct_date ? ' · ' + fmtDate(d.traffic_pct_date) : '';
+        updateKpiSource('kTrafficSource', d.traffic_pct_source + dateStr);
+      } else {
+        updateKpiSource('kTrafficSource', null);
+      }
+      // Attacks source — derive from most recent attack incident
+      if (recentAttacks.length > 0) {
+        const latestAttack = recentAttacks[0];
+        const dateStr = latestAttack.date ? ' · ' + fmtDate(latestAttack.date) : '';
+        updateKpiSource('kAttacksSource', (latestAttack.source_domain || 'multiple') + dateStr);
+      } else {
+        updateKpiSource('kAttacksSource', null);
+      }
+      // Advisory source
+      if (d.advisory_level && d.advisory_source) {
+        const dateStr = d.advisory_date ? ' · ' + fmtDate(d.advisory_date) : '';
+        updateKpiSource('kAdvisorySource', d.advisory_source + dateStr);
+      } else {
+        updateKpiSource('kAdvisorySource', null);
+      }
+
       // Confidence indicator
       const confEl = document.getElementById('confidenceBadge');
       if (confEl && d.confidence) {
@@ -3561,6 +3909,33 @@
       const incCount = (d.incidents || []).length;
       document.getElementById('incidentMeta').textContent = incCount + ' EVENT' + (incCount !== 1 ? 'S' : '');
 
+      // ─── [D] Render contradictions panel ─────
+      const contradictions = Array.isArray(d.contradictions) ? d.contradictions : [];
+      const contraPanel = document.getElementById('contradictionsPanel');
+      const contraList = document.getElementById('contradictionsList');
+      if (contraPanel && contraList) {
+        if (contradictions.length > 0) {
+          contraList.innerHTML = contradictions.map(c => {
+            const claim = escapeHtml(c.claim || '');
+            const url = c.source_url ? escapeHtml(c.source_url) : '';
+            const domain = escapeHtml(c.source_domain || '—');
+            const sourceLink = url
+              ? '<a href="' + url + '" target="_blank" rel="noopener" class="contra-item-source">' + domain + ' ↗</a>'
+              : '<span class="contra-item-source">' + domain + '</span>';
+            return '<div class="contra-item">' +
+                '<div class="contra-item-bullet"></div>' +
+                '<div class="contra-item-body">' +
+                  '<div class="contra-item-claim">' + claim + '</div>' +
+                  sourceLink +
+                '</div>' +
+              '</div>';
+          }).join('');
+          contraPanel.hidden = false;
+        } else {
+          contraPanel.hidden = true;
+        }
+      }
+
       // Sources rendered as clickable pills with tier indicators
       const srcEl = document.getElementById('sources');
       const sources = d.sources || [];
@@ -3596,17 +3971,27 @@
       status: 'DISRUPTED',
       status_jp: '混乱',
       status_basis: 'UKMTO JMIC Advisory 004-26 lists Strait of Hormuz threat level as CRITICAL with active mine and GNSS interference reports.',
+      status_change_from_prior: 'no_change',
+      review_notes: 'Reviewer confirmed primary source citations; one secondary-tier incident downgraded confidence.',
       headline_en: 'IRGC enforces selective passage; commercial transit at ~5% of normal volumes.',
       headline_jp: 'IRGCが通航を選別実施、商業通航量は通常の約5%まで低下。',
       traffic_pct: 5,
       traffic_pct_source: 'lloydslist.com',
+      traffic_pct_date: '2026-05-11',
       advisory_level: 'CRITICAL',
       advisory_source: 'UKMTO',
+      advisory_date: '2026-05-04',
+      attacks_7d: 2,
+      attacks_7d_source: 'ukmto.org',
       primary_source_consulted: true,
       next_expected_update_hours: 18,
       last_advisory_id: 'JMIC 004-26',
       last_advisory_date: '2026-05-04',
       confidence: 'HIGH',
+      contradictions: [
+        { claim: 'Some bulk carriers reportedly continued limited Strait transit under IRGC-issued permits, contradicting "effectively closed" framing.', source_url: 'https://www.aljazeera.com', source_domain: 'aljazeera.com' },
+        { claim: 'Iran state media (IRNA) describes transit as "normal under new procedures", not as disruption.', source_url: 'https://www.irna.ir', source_domain: 'irna.ir' }
+      ],
       transitions: [
         { date: '2025-11-15', status: 'OPEN' },
         { date: '2026-02-28', status: 'CLOSED' },
