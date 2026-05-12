@@ -2866,7 +2866,7 @@
             'anthropic-dangerous-direct-browser-access': 'true'
           },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-sonnet-4-6',
             max_tokens: 16,
             messages: [{ role: 'user', content: 'Reply with only: OK' }]
           })
@@ -3108,21 +3108,14 @@
           'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-sonnet-4-6',
           max_tokens: 8000,
           temperature: 0,
           messages: [{ role: 'user', content: prompt }],
           tools: [{
             type: 'web_search_20250305',
             name: 'web_search',
-            max_uses: 8,
-            allowed_domains: [
-              'ukmto.org', 'imo.org', 'cusnc.navy.mil',
-              'lloydslist.com', 'insights.windward.ai',
-              'reuters.com', 'apnews.com', 'bloomberg.com',
-              'aljazeera.com', 'cnn.com', 'nbcnews.com', 'nytimes.com',
-              'ft.com', 'wsj.com'
-            ]
+            max_uses: 8
           }]
         })
       });
